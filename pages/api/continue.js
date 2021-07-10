@@ -25,7 +25,7 @@ export default function handler(req, res) {
     id: uuidv4().replace(/-/g, ''),
     issueTime,
     expiryTime,
-    issuer: 'saml-mock',
+    issuer: body.issuer,
     redirectUrl: body.acsUrl,
     destination: body.acsUrl || parsedReq.destination,
     audience: body.aud,

@@ -20,6 +20,7 @@ export default function IdP(props) {
   const [relayState, setRelayState] = useState(props.relayState)
   const [aud, setAud] = useState(props.aud)
   const [acsUrl, setAcsUrl] = useState(props.acsUrl)
+  const [issuer, setIssuer] = useState('saml-mock')
 
   const submit = async () => {
     try {
@@ -33,6 +34,7 @@ export default function IdP(props) {
           relayState,
           aud,
           acsUrl,
+          issuer,
         },
       })
       // Save the info in localStorage, so they could be used by form post script in next page
@@ -62,7 +64,7 @@ export default function IdP(props) {
       </AppBar>
 
       <Grid container>
-        <Grid item xs={12}>
+        <Grid item xs={9}>
           <Paper className={styles.paper}>
             <Typography variant="h6">SP Attributes</Typography>
             <Grid container>
@@ -91,6 +93,17 @@ export default function IdP(props) {
                 />
               </Grid>
             </Grid>
+          </Paper>
+        </Grid>
+        <Grid item xs={3}>
+          <Paper className={styles.paper}>
+            <Typography variant="h6">IdP Attributes</Typography>
+            <TextField
+              fullWidth
+              label="Issuer"
+              value={issuer}
+              onChange={(ev) => setIssuer(ev.target.value)}
+            />
           </Paper>
         </Grid>
         <Grid item xs={12}>
