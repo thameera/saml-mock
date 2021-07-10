@@ -1,7 +1,9 @@
-import { CssBaseline } from '@material-ui/core'
+import { createTheme, CssBaseline } from '@material-ui/core'
 import { ThemeProvider } from '@material-ui/styles'
 import Head from 'next/head'
 import '../styles/globals.css'
+
+const theme = createTheme({})
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -15,7 +17,7 @@ function MyApp({ Component, pageProps }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <ThemeProvider>
+      <ThemeProvider theme={theme}>
         <CssBaseline />
         <Component {...pageProps} />
       </ThemeProvider>
