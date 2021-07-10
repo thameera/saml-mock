@@ -1,6 +1,9 @@
 import { createTheme, CssBaseline } from '@material-ui/core'
 import { ThemeProvider } from '@material-ui/styles'
 import Head from 'next/head'
+
+import 'codemirror/lib/codemirror.css'
+import 'codemirror/theme/xq-light.css'
 import '../styles/globals.css'
 
 const theme = createTheme({})
