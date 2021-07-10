@@ -5,6 +5,7 @@ import {
   Button,
   Grid,
   Paper,
+  TextField,
   Toolbar,
   Typography,
 } from '@material-ui/core'
@@ -16,6 +17,9 @@ import styles from '../styles/IdP.module.css'
 export default function IdP(props) {
   const [assertion, setAssertion] = useState(assertionTemplate)
   const [response, setResponse] = useState(responseTemplate)
+  const [relayState, setRelayState] = useState(props.relayState)
+  const [aud, setAud] = useState(props.aud)
+  const [acsUrl, setAcsUrl] = useState(props.acsUrl)
 
   const submit = async () => {
     try {
@@ -23,9 +27,12 @@ export default function IdP(props) {
         method: 'POST',
         url: '/api/continue',
         data: {
+          ...props,
           assertion,
           response,
-          ...props,
+          relayState,
+          aud,
+          acsUrl,
         },
       })
       // Save the info in localStorage, so they could be used by form post script in next page
@@ -57,6 +64,37 @@ export default function IdP(props) {
       <Grid container>
         <Grid item xs={12}>
           <Paper className={styles.paper}>
+            <Typography variant="h6">SP Attributes</Typography>
+            <Grid container>
+              <Grid item xs={4}>
+                <TextField
+                  fullWidth
+                  label="RelayState"
+                  value={relayState}
+                  onChange={(ev) => setRelayState(ev.target.value)}
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <TextField
+                  fullWidth
+                  label="Audience"
+                  value={aud}
+                  onChange={(ev) => setAud(ev.target.value)}
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <TextField
+                  fullWidth
+                  label="ACS URL"
+                  value={acsUrl}
+                  onChange={(ev) => setAcsUrl(ev.target.value)}
+                />
+              </Grid>
+            </Grid>
+          </Paper>
+        </Grid>
+        <Grid item xs={12}>
+          <Paper className={styles.paper}>
             <Typography variant="h6">Response</Typography>
             <XMLEditor xmlStr={response} updateXmlStr={setResponse} />
           </Paper>
@@ -79,7 +117,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       samlreq: q.SAMLRequest || null,
-      relaystate: q.RelayState || '',
+      relayState: q.RelayState || '',
       aud: q.aud || '',
       acsUrl: q.acs_url || '',
     },

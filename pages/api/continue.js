@@ -45,7 +45,7 @@ export default function handler(req, res) {
 
   res.status(200).json({
     SAMLResponse: Buffer.from(canonicalizedResponse).toString('base64'),
-    RelayState: body.relaystate,
+    RelayState: body.relayState,
     acsUrl: body.acsUrl,
   })
 }
