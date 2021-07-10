@@ -17,15 +17,20 @@ export default function IdP(props) {
   const [assertion, setAssertion] = useState(assertionTemplate)
 
   const submit = async () => {
-    const res = await axios({
-      method: 'POST',
-      url: '/api/continue',
-      data: {
-        assertion,
-        ...props,
-      },
-    })
-    console.log(res)
+    try {
+      const res = await axios({
+        method: 'POST',
+        url: '/api/continue',
+        data: {
+          assertion,
+          ...props,
+        },
+      })
+      console.log(res)
+    } catch (e) {
+      console.log(e)
+      // TODO: show error in UI
+    }
   }
 
   return (
