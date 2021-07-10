@@ -1,8 +1,10 @@
-import { parseSamlRequest } from '../../lib/requestParser'
 import format from 'string-template'
 import { DateTime } from 'luxon'
+import { v4 as uuidv4 } from 'uuid'
+import { parseSamlRequest } from '../../lib/requestParser'
 import { canonicalize } from '../../lib/utils'
 import { sign } from '../../lib/signer'
+import { responseTemplate } from '../../lib/templates'
 
 export default function handler(req, res) {
   if (req.method !== 'POST') {
@@ -16,12 +18,12 @@ export default function handler(req, res) {
     return res.status(400).json({ parsedReq })
   }
 
-  // Date prep
   const now = DateTime.now()
   const issueTime = now.toUTC().toISO()
   const expiryTime = now.plus({ days: 1 }).toUTC().toISO()
 
   const mappings = {
+    id: uuidv4().replace(/-/g, ''),
     issueTime,
     expiryTime,
     issuer: 'saml-mock',
@@ -31,10 +33,20 @@ export default function handler(req, res) {
     inResponseTo: parsedReq.id,
   }
 
+  // Prepare assertion
   const assertion = format(body.assertion, mappings)
   const canonicalizedAssertion = canonicalize(assertion)
   const signedAssertion = sign(canonicalizedAssertion)
-  console.log(signedAssertion)
 
-  res.status(200).json({ name: 'John Doe' })
+  mappings.assertion = signedAssertion
+
+  // Prepare response
+  const response = format(responseTemplate, mappings)
+  const canonicalizedResponse = canonicalize(response)
+
+  res.status(200).json({
+    SAMLResponse: Buffer.from(canonicalizedResponse).toString('base64'),
+    RelayState: body.relaystate,
+    acsUrl: body.acsUrl,
+  })
 }

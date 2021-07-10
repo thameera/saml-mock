@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Redirecting...</title>
+</head>
+<body>
+	<p>Redirecting...</p>
+	<form method="post" name="hiddenform" action="">
+		<input type="hidden"
+			name="SAMLResponse"
+			value="" />
+		<input type="hidden" name="RelayState" value="" />
+	</form>
+
+	<script>
+		const key = 'saml-mock:idp'
+		const encoded = localStorage[key]
+		localStorage.removeItem(key)
+
+		const data = JSON.parse(atob(encoded))
+
+		const f = document.forms[0]
+		f.action = data.acsUrl
+
+		f.elements[0].value = data.SAMLResponse
+		f.elements[1].value = data.RelayState
+
+		setTimeout(() => {
+			f.submit()
+		}, 0)
+	</script>
+
+</body>
+</html>

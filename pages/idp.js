@@ -26,7 +26,10 @@ export default function IdP(props) {
           ...props,
         },
       })
-      console.log(res)
+      // Save the info in localStorage, so they could be used by form post script in next page
+      localStorage['saml-mock:idp'] = btoa(JSON.stringify(res.data))
+
+      window.location = '/postResponse.html'
     } catch (e) {
       console.log(e)
       // TODO: show error in UI
