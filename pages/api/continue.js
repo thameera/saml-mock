@@ -4,7 +4,6 @@ import { v4 as uuidv4 } from 'uuid'
 import { parseSamlRequest } from '../../lib/requestParser'
 import { canonicalize } from '../../lib/utils'
 import { sign } from '../../lib/signer'
-import { responseTemplate } from '../../lib/templates'
 
 export default function handler(req, res) {
   if (req.method !== 'POST') {
@@ -41,7 +40,7 @@ export default function handler(req, res) {
   mappings.assertion = signedAssertion
 
   // Prepare response
-  const response = format(responseTemplate, mappings)
+  const response = format(body.response, mappings)
   const canonicalizedResponse = canonicalize(response)
 
   res.status(200).json({

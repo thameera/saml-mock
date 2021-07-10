@@ -10,11 +10,12 @@ import {
 } from '@material-ui/core'
 import axios from 'axios'
 import XMLEditor from '../components/XMLEditor'
-import { assertionTemplate } from '../lib/templates'
+import { assertionTemplate, responseTemplate } from '../lib/templates'
 import styles from '../styles/IdP.module.css'
 
 export default function IdP(props) {
   const [assertion, setAssertion] = useState(assertionTemplate)
+  const [response, setResponse] = useState(responseTemplate)
 
   const submit = async () => {
     try {
@@ -23,6 +24,7 @@ export default function IdP(props) {
         url: '/api/continue',
         data: {
           assertion,
+          response,
           ...props,
         },
       })
@@ -53,6 +55,12 @@ export default function IdP(props) {
       </AppBar>
 
       <Grid container>
+        <Grid item xs={12}>
+          <Paper className={styles.paper}>
+            <Typography variant="h6">Response</Typography>
+            <XMLEditor xmlStr={response} updateXmlStr={setResponse} />
+          </Paper>
+        </Grid>
         <Grid item xs={12}>
           <Paper className={styles.paper}>
             <Typography variant="h6">Assertion</Typography>
