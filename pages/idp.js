@@ -63,6 +63,7 @@ export default function IdP(props) {
 
 export async function getServerSideProps(context) {
   const q = context.query
+  // TODO: show warnings when aud or acsUrl isn't present
 
   return {
     props: {
