@@ -2,6 +2,7 @@ import { parseSamlRequest } from '../../lib/requestParser'
 import format from 'string-template'
 import { DateTime } from 'luxon'
 import { canonicalize } from '../../lib/utils'
+import { sign } from '../../lib/signer'
 
 export default function handler(req, res) {
   if (req.method !== 'POST') {
@@ -32,7 +33,8 @@ export default function handler(req, res) {
 
   const assertion = format(body.assertion, mappings)
   const canonicalizedAssertion = canonicalize(assertion)
-  console.log(canonicalizedAssertion)
+  const signedAssertion = sign(canonicalizedAssertion)
+  console.log(signedAssertion)
 
   res.status(200).json({ name: 'John Doe' })
 }

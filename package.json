@@ -20,6 +20,7 @@
     "react-codemirror2": "^7.2.1",
     "react-dom": "17.0.2",
     "string-template": "^1.0.0",
+    "xml-crypto": "^2.1.2",
     "xmldom": "^0.6.0",
     "xpath": "0.0.32"
   },
