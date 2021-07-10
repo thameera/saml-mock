@@ -1,3 +1,7 @@
 .paper {
   padding: 10px;
 }
+
+.grow {
+  flex-grow: 1;
+}

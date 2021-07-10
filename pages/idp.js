@@ -1,12 +1,32 @@
 import { useState } from 'react'
 import Head from 'next/head'
-import { AppBar, Grid, Paper, Toolbar, Typography } from '@material-ui/core'
+import {
+  AppBar,
+  Button,
+  Grid,
+  Paper,
+  Toolbar,
+  Typography,
+} from '@material-ui/core'
+import axios from 'axios'
 import XMLEditor from '../components/XMLEditor'
 import { assertionTemplate } from '../lib/templates'
 import styles from '../styles/IdP.module.css'
 
-export default function Home() {
+export default function IdP(props) {
   const [assertion, setAssertion] = useState(assertionTemplate)
+
+  const submit = async () => {
+    const res = await axios({
+      method: 'POST',
+      url: '/api/continue',
+      data: {
+        assertion,
+        ...props,
+      },
+    })
+    console.log(res)
+  }
 
   return (
     <>
@@ -17,6 +37,10 @@ export default function Home() {
       <AppBar position="sticky" color="transparent">
         <Toolbar>
           <Typography variant="h5">SAML Mock IdP</Typography>
+          <div className={styles.grow} />
+          <Button variant="contained" color="primary" onClick={submit}>
+            Submit
+          </Button>
         </Toolbar>
       </AppBar>
 
@@ -30,4 +54,17 @@ export default function Home() {
       </Grid>
     </>
   )
+}
+
+export async function getServerSideProps(context) {
+  const q = context.query
+
+  return {
+    props: {
+      samlreq: q.SAMLRequest || null,
+      relaystate: q.RelayState || '',
+      aud: q.aud || '',
+      acsUrl: q.acs_url || '',
+    },
+  }
 }
