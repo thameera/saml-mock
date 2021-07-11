@@ -1,0 +1,12 @@
+.code {
+  font-family: monospace;
+  color: gray;
+}
+
+.highlight {
+  color: blue;
+}
+
+.spacer {
+  height: 20px;
+}

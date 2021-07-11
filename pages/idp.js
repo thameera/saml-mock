@@ -22,6 +22,7 @@ import axios from 'axios'
 import XMLEditor from '../components/XMLEditor'
 import { assertionTemplate, responseTemplate } from '../lib/templates'
 import styles from '../styles/IdP.module.css'
+import IdPInstructionsDialog from '../components/IdPInstructionsDialog'
 
 export default function IdP(props) {
   const [assertion, setAssertion] = useState(assertionTemplate)
@@ -36,6 +37,8 @@ export default function IdP(props) {
     sigAlgo: 'rsa-sha1',
     digestAlgo: 'sha1',
   })
+
+  const [instructionsOpen, setInstructionsOpen] = useState(false)
 
   const submit = async () => {
     try {
@@ -80,6 +83,14 @@ export default function IdP(props) {
             className={styles.button}
           >
             Download Certificate
+          </Button>
+          <Button
+            variant="outlined"
+            color="default"
+            className={styles.button}
+            onClick={() => setInstructionsOpen(true)}
+          >
+            Instructions
           </Button>
           <div className={styles.grow} />
           <Button
@@ -227,6 +238,11 @@ export default function IdP(props) {
           </Paper>
         </Grid>
       </Grid>
+
+      <IdPInstructionsDialog
+        open={instructionsOpen}
+        onClose={() => setInstructionsOpen(false)}
+      />
     </>
   )
 }
