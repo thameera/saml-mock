@@ -35,17 +35,12 @@ export default function handler(req, res) {
   // Prepare assertion
   const assertion = format(body.assertion, mappings)
   const canonicalizedAssertion = canonicalize(assertion)
-
-  mappings.assertion = body.sigOpts.signAssertion
-    ? signAssertion(canonicalizedAssertion)
-    : canonicalizedAssertion
+  mappings.assertion = signAssertion(canonicalizedAssertion, body.sigOpts)
 
   // Prepare response
   const response = format(body.response, mappings)
   const canonicalizedResponse = canonicalize(response)
-  const finalResponseXml = body.sigOpts.signResponse
-    ? signResponse(canonicalizedResponse)
-    : canonicalizedResponse
+  const finalResponseXml = signResponse(canonicalizedResponse, body.sigOpts)
 
   const SAMLResponse = Buffer.from(finalResponseXml).toString('base64')
 

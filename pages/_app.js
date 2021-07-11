@@ -1,4 +1,7 @@
-import { createTheme, CssBaseline } from '@material-ui/core'
+import {
+  CssBaseline,
+  unstable_createMuiStrictModeTheme,
+} from '@material-ui/core'
 import { ThemeProvider } from '@material-ui/styles'
 import Head from 'next/head'
 
@@ -6,7 +9,9 @@ import 'codemirror/lib/codemirror.css'
 import 'codemirror/theme/xq-light.css'
 import '../styles/globals.css'
 
-const theme = createTheme({})
+// Using this to get rid of React strict mode warnings
+// https://stackoverflow.com/a/64135466/390522
+const theme = unstable_createMuiStrictModeTheme({})
 
 function MyApp({ Component, pageProps }) {
   return (

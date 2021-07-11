@@ -6,3 +6,8 @@
 .grow {
   flex-grow: 1;
 }
+
+.select {
+  width: 150px !important;
+  margin-right: 15px !important;
+}

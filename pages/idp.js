@@ -4,11 +4,15 @@ import {
   AppBar,
   Button,
   Checkbox,
+  FormControl,
   FormControlLabel,
   FormGroup,
   Grid,
+  InputLabel,
+  MenuItem,
   NoSsr,
   Paper,
+  Select,
   TextField,
   Toolbar,
   Typography,
@@ -28,6 +32,8 @@ export default function IdP(props) {
   const [sigOpts, setSigOpts] = useState({
     signAssertion: true,
     signResponse: false,
+    sigAlgo: 'rsa-sha1',
+    digestAlgo: 'sha1',
   })
 
   const submit = async () => {
@@ -48,6 +54,7 @@ export default function IdP(props) {
       })
       // Save the info in localStorage, so they could be used by form post script in next page
       localStorage['saml-mock:idp'] = btoa(JSON.stringify(res.data))
+      console.log(res.data.SAMLResponse)
 
       window.location = '/postResponse.html'
     } catch (e) {
@@ -120,48 +127,72 @@ export default function IdP(props) {
         </Grid>
 
         {/* Signature */}
-        <Grid item xs={12}>
+        <Grid item xs={8}>
           <Paper className={styles.paper}>
             <Typography variant="h6">Signature</Typography>
             <NoSsr>
-              <Grid container>
-                <Grid item xs={6}>
-                  <FormGroup row>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={sigOpts.signAssertion}
-                          onChange={(ev) =>
-                            setSigOpts({
-                              ...sigOpts,
-                              signAssertion: ev.target.checked,
-                            })
-                          }
-                          name="signAssertion"
-                          color="primary"
-                        />
+              <FormGroup row>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={sigOpts.signAssertion}
+                      onChange={(ev) =>
+                        setSigOpts({
+                          ...sigOpts,
+                          signAssertion: ev.target.checked,
+                        })
                       }
-                      label="Sign Assertion"
+                      name="signAssertion"
+                      color="primary"
                     />
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={sigOpts.signResponse}
-                          onChange={(ev) =>
-                            setSigOpts({
-                              ...sigOpts,
-                              signResponse: ev.target.checked,
-                            })
-                          }
-                          name="signResponse"
-                          color="primary"
-                        />
+                  }
+                  label="Sign Assertion"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={sigOpts.signResponse}
+                      onChange={(ev) =>
+                        setSigOpts({
+                          ...sigOpts,
+                          signResponse: ev.target.checked,
+                        })
                       }
-                      label="Sign Response"
+                      name="signResponse"
+                      color="primary"
                     />
-                  </FormGroup>
-                </Grid>
-              </Grid>
+                  }
+                  label="Sign Response"
+                />
+                <FormControl className={styles.select}>
+                  <InputLabel id="sig-algo">Signature Algorithm</InputLabel>
+                  <Select
+                    labelId="sig-algo"
+                    value={sigOpts.sigAlgo}
+                    onChange={(ev) =>
+                      setSigOpts({ ...sigOpts, sigAlgo: ev.target.value })
+                    }
+                    className={styles.select}
+                  >
+                    <MenuItem value="rsa-sha1">RSA-SHA1</MenuItem>
+                    <MenuItem value="rsa-sha256">RSA-SHA256</MenuItem>
+                  </Select>
+                </FormControl>
+                <FormControl className={styles.select}>
+                  <InputLabel id="digest-algo">Digest Algorithm</InputLabel>
+                  <Select
+                    labelId="digest-algo"
+                    value={sigOpts.digestAlgo}
+                    onChange={(ev) =>
+                      setSigOpts({ ...sigOpts, digestAlgo: ev.target.value })
+                    }
+                    className={styles.select}
+                  >
+                    <MenuItem value="sha1">SHA1</MenuItem>
+                    <MenuItem value="sha256">SHA256</MenuItem>
+                  </Select>
+                </FormControl>
+              </FormGroup>
             </NoSsr>
           </Paper>
         </Grid>
