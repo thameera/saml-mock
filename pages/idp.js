@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Head from 'next/head'
+import Link from 'next/link'
 import {
   AppBar,
   Button,
@@ -72,8 +73,21 @@ export default function IdP(props) {
       <AppBar position="sticky" color="transparent">
         <Toolbar>
           <Typography variant="h5">SAML Mock IdP</Typography>
+          <Button
+            variant="outlined"
+            color="default"
+            href="/api/downloadCert"
+            className={styles.button}
+          >
+            Download Certificate
+          </Button>
           <div className={styles.grow} />
-          <Button variant="contained" color="primary" onClick={submit}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={submit}
+            className={styles.button}
+          >
             Submit
           </Button>
         </Toolbar>
