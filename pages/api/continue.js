@@ -3,7 +3,7 @@ import { DateTime } from 'luxon'
 import { v4 as uuidv4 } from 'uuid'
 import { parseSamlRequest } from '../../lib/requestParser'
 import { canonicalize } from '../../lib/utils'
-import { sign } from '../../lib/signer'
+import { signAssertion, signResponse } from '../../lib/signer'
 
 export default function handler(req, res) {
   if (req.method !== 'POST') {
@@ -35,16 +35,22 @@ export default function handler(req, res) {
   // Prepare assertion
   const assertion = format(body.assertion, mappings)
   const canonicalizedAssertion = canonicalize(assertion)
-  const signedAssertion = sign(canonicalizedAssertion)
 
-  mappings.assertion = signedAssertion
+  mappings.assertion = body.sigOpts.signAssertion
+    ? signAssertion(canonicalizedAssertion)
+    : canonicalizedAssertion
 
   // Prepare response
   const response = format(body.response, mappings)
   const canonicalizedResponse = canonicalize(response)
+  const finalResponseXml = body.sigOpts.signResponse
+    ? signResponse(canonicalizedResponse)
+    : canonicalizedResponse
+
+  const SAMLResponse = Buffer.from(finalResponseXml).toString('base64')
 
   res.status(200).json({
-    SAMLResponse: Buffer.from(canonicalizedResponse).toString('base64'),
+    SAMLResponse,
     RelayState: body.relayState,
     acsUrl: body.acsUrl,
   })

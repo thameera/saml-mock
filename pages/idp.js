@@ -3,7 +3,11 @@ import Head from 'next/head'
 import {
   AppBar,
   Button,
+  Checkbox,
+  FormControlLabel,
+  FormGroup,
   Grid,
+  NoSsr,
   Paper,
   TextField,
   Toolbar,
@@ -21,6 +25,10 @@ export default function IdP(props) {
   const [aud, setAud] = useState(props.aud)
   const [acsUrl, setAcsUrl] = useState(props.acsUrl)
   const [issuer, setIssuer] = useState('saml-mock')
+  const [sigOpts, setSigOpts] = useState({
+    signAssertion: true,
+    signResponse: false,
+  })
 
   const submit = async () => {
     try {
@@ -35,6 +43,7 @@ export default function IdP(props) {
           aud,
           acsUrl,
           issuer,
+          sigOpts,
         },
       })
       // Save the info in localStorage, so they could be used by form post script in next page
@@ -64,7 +73,8 @@ export default function IdP(props) {
       </AppBar>
 
       <Grid container>
-        <Grid item xs={9}>
+        {/* SP Attributes */}
+        <Grid item xs={12}>
           <Paper className={styles.paper}>
             <Typography variant="h6">SP Attributes</Typography>
             <Grid container>
@@ -95,7 +105,9 @@ export default function IdP(props) {
             </Grid>
           </Paper>
         </Grid>
-        <Grid item xs={3}>
+
+        {/* IdP Attributes */}
+        <Grid item xs={4}>
           <Paper className={styles.paper}>
             <Typography variant="h6">IdP Attributes</Typography>
             <TextField
@@ -106,12 +118,63 @@ export default function IdP(props) {
             />
           </Paper>
         </Grid>
+
+        {/* Signature */}
+        <Grid item xs={12}>
+          <Paper className={styles.paper}>
+            <Typography variant="h6">Signature</Typography>
+            <NoSsr>
+              <Grid container>
+                <Grid item xs={6}>
+                  <FormGroup row>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={sigOpts.signAssertion}
+                          onChange={(ev) =>
+                            setSigOpts({
+                              ...sigOpts,
+                              signAssertion: ev.target.checked,
+                            })
+                          }
+                          name="signAssertion"
+                          color="primary"
+                        />
+                      }
+                      label="Sign Assertion"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={sigOpts.signResponse}
+                          onChange={(ev) =>
+                            setSigOpts({
+                              ...sigOpts,
+                              signResponse: ev.target.checked,
+                            })
+                          }
+                          name="signResponse"
+                          color="primary"
+                        />
+                      }
+                      label="Sign Response"
+                    />
+                  </FormGroup>
+                </Grid>
+              </Grid>
+            </NoSsr>
+          </Paper>
+        </Grid>
+
+        {/* Response */}
         <Grid item xs={12}>
           <Paper className={styles.paper}>
             <Typography variant="h6">Response</Typography>
             <XMLEditor xmlStr={response} updateXmlStr={setResponse} />
           </Paper>
         </Grid>
+
+        {/* Assertion */}
         <Grid item xs={12}>
           <Paper className={styles.paper}>
             <Typography variant="h6">Assertion</Typography>
