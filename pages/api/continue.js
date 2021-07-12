@@ -1,8 +1,7 @@
 import format from 'string-template'
 import { DateTime } from 'luxon'
-import { v4 as uuidv4 } from 'uuid'
 import { parseSamlRequest } from '../../lib/requestParser'
-import { canonicalize } from '../../lib/utils'
+import { canonicalize, generateId } from '../../lib/utils'
 import { signAssertion, signResponse } from '../../lib/signer'
 
 export default function handler(req, res) {
@@ -22,7 +21,7 @@ export default function handler(req, res) {
   const expiryTime = now.plus({ days: 1 }).toUTC().toISO()
 
   const mappings = {
-    id: uuidv4().replace(/-/g, ''),
+    id: generateId(),
     issueTime,
     expiryTime,
     issuer: body.issuer,

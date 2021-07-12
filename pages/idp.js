@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import Head from 'next/head'
-import Link from 'next/link'
 import {
   AppBar,
   Button,
@@ -21,7 +20,7 @@ import {
 import axios from 'axios'
 import XMLEditor from '../components/XMLEditor'
 import { assertionTemplate, responseTemplate } from '../lib/templates'
-import styles from '../styles/IdP.module.css'
+import styles from '../styles/Home.module.css'
 import IdPInstructionsDialog from '../components/IdPInstructionsDialog'
 
 export default function IdP(props) {

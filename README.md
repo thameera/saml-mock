@@ -31,3 +31,4 @@ App will be available at [http://localhost:3333](http://localhost:3333).
 - https://github.com/AmaanC/saml-idp
 - https://github.com/auth0/node-saml
 - https://github.com/auth0/node-samlp
+- https://github.com/auth0/passport-wsfed-saml2
