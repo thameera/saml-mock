@@ -13,7 +13,7 @@ export default function XMLEditor({ xmlStr, updateXmlStr }) {
   }, [])
 
   const handleChange = (editor, data, value) => {
-    updateXmlStr(value)
+    updateXmlStr && updateXmlStr(value)
   }
 
   return (

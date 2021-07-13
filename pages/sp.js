@@ -67,7 +67,7 @@ export default function SP() {
 
       <AppBar position="sticky" color="transparent">
         <Toolbar>
-          <Typography variant="h5">SAML Mock SP [WIP]</Typography>
+          <Typography variant="h5">SAML Mock SP</Typography>
           <div className={styles.grow} />
           <Button
             variant="contained"

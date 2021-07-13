@@ -23,6 +23,7 @@
     "urlencoded-body-parser": "^3.0.0",
     "uuid": "^8.3.2",
     "xml-crypto": "^2.1.2",
+    "xml-formatter": "^2.4.0",
     "xmldom": "^0.6.0",
     "xpath": "0.0.32"
   },

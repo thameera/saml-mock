@@ -1,7 +1,17 @@
 import Head from 'next/head'
-import { AppBar, Button, Paper, Toolbar, Typography } from '@material-ui/core'
+import {
+  AppBar,
+  Button,
+  Grid,
+  Paper,
+  TextField,
+  Toolbar,
+  Typography,
+} from '@material-ui/core'
+import xmlFormat from 'xml-formatter'
 import parse from 'urlencoded-body-parser'
 import styles from '../styles/Home.module.css'
+import XMLEditor from '../components/XMLEditor'
 
 export default function Callback(props) {
   return (
@@ -12,7 +22,7 @@ export default function Callback(props) {
 
       <AppBar position="sticky" color="transparent">
         <Toolbar>
-          <Typography variant="h5">SAML Mock Callback [WIP]</Typography>
+          <Typography variant="h5">SAML Mock Callback</Typography>
           <div className={styles.grow} />
           <Button
             variant="contained"
@@ -25,18 +35,50 @@ export default function Callback(props) {
         </Toolbar>
       </AppBar>
 
-      <Paper>{props.response}</Paper>
+      <Grid container>
+        <Grid item xs={12}>
+          <Paper className={styles.paper}>
+            TODO: Open in samltool.io button
+          </Paper>
+        </Grid>
+        <Grid item xs={12}>
+          <Paper className={styles.paper}>
+            <Typography variant="h6">SAML Response</Typography>
+            <TextField
+              fullWidth
+              value={props.response}
+              multiline
+              maxRows={4}
+              InputProps={{ readOnly: true }}
+            />
+          </Paper>
+        </Grid>
+        <Grid item xs={12}>
+          <Paper className={styles.paper}>
+            <Typography variant="h6">Parsed XML</Typography>
+            <XMLEditor xmlStr={props.xml} />
+          </Paper>
+        </Grid>
+      </Grid>
     </>
   )
 }
 
 export async function getServerSideProps(context) {
+  // TODO: error handle, support GET
   const b = context.req.method === 'POST' ? await parse(context.req) : {}
+
+  let xml = ''
+  if (b.SAMLResponse) {
+    const decoded = Buffer.from(b.SAMLResponse, 'base64').toString()
+    xml = xmlFormat(decoded)
+  }
 
   return {
     props: {
       response: b.SAMLResponse || '',
       relayState: b.RelayState || '',
+      xml,
     },
   }
 }
