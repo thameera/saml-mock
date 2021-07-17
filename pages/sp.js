@@ -13,10 +13,12 @@ import axios from 'axios'
 import { requestTemplate } from '../lib/templates'
 import styles from '../styles/Home.module.css'
 import XMLEditor from '../components/XMLEditor'
+import { generateId } from '../lib/utils'
 
 export default function SP() {
   const [request, setRequest] = useState(requestTemplate)
   const [signinUrl, setSigninUrl] = useState('')
+  const [relayState, setRelayState] = useState(generateId())
 
   const STORAGE_KEY = 'saml-mock:sp:url'
 
@@ -49,6 +51,7 @@ export default function SP() {
         data: {
           request,
           signinUrl,
+          relayState,
         },
       })
 
@@ -82,13 +85,23 @@ export default function SP() {
 
       <Grid container>
         {/* Sign-in URL */}
-        <Grid item xs={12}>
+        <Grid item xs={8}>
           <Paper className={styles.paper}>
             <TextField
               fullWidth
               label="Sign-in URL"
               value={signinUrl}
               onChange={(ev) => setSigninUrl(ev.target.value)}
+            />
+          </Paper>
+        </Grid>
+        <Grid item xs={4}>
+          <Paper className={styles.paper}>
+            <TextField
+              fullWidth
+              label="RelayState"
+              value={relayState}
+              onChange={(ev) => setRelayState(ev.target.value)}
             />
           </Paper>
         </Grid>

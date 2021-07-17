@@ -25,7 +25,7 @@ export default function handler(req, res) {
   res.status(200).json({
     qs: {
       SAMLRequest,
-      RelayState: generateId(),
+      RelayState: body.relayState,
     },
   })
 }
