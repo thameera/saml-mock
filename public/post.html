@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Redirecting...</title>
+</head>
+
+<body>
+  <p id="redir-msg">Redirecting...</p>
+  <form method="post" action="" id="response-form">
+    <input type="hidden" name="SAMLResponse" value="" />
+    <input type="hidden" name="RelayState" value="" />
+  </form>
+  <noscript>
+    <p>
+      Script is disabled. Click Submit to continue.
+    </p><input type="submit" value="Submit">
+  </noscript>
+
+
+  <script>
+    const postResponse = () => {
+      const key = 'saml-mock:idp'
+      const encoded = localStorage[key]
+      localStorage.removeItem(key)
+
+      const data = JSON.parse(atob(encoded))
+
+      const f = document.querySelector('#response-form')
+      f.action = data.acsUrl
+
+      f.elements[0].value = data.SAMLResponse
+      f.elements[1].value = data.RelayState
+
+      setTimeout(() => {
+        f.submit()
+      }, 0)
+    }
+
+    const url = new URL(window.location)
+
+    if (url.searchParams.get('type') === 'response') {
+      postResponse()
+    } else {
+      alert('Invalid type')
+      document.querySelector('#redir-msg').innerHTML = 'Error'
+    }
+
+  </script>
+
+</body>
+
+</html>

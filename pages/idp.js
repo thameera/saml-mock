@@ -59,7 +59,7 @@ export default function IdP(props) {
       localStorage['saml-mock:idp'] = btoa(JSON.stringify(res.data))
       console.log(res.data.SAMLResponse)
 
-      window.location = '/postResponse.html'
+      window.location = '/post.html?type=response'
     } catch (e) {
       console.log(e)
       // TODO: show error in UI
