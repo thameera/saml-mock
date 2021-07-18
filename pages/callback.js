@@ -14,6 +14,13 @@ import styles from '../styles/Home.module.css'
 import XMLEditor from '../components/XMLEditor'
 
 export default function Callback(props) {
+  const sendToSamltool = () => {
+    const data = { SAMLResponse: props.response }
+    localStorage['saml-mock:samltool'] = btoa(JSON.stringify(data))
+
+    window.open('/post.html?type=samltool', '_blank').focus()
+  }
+
   return (
     <>
       <Head>
@@ -38,7 +45,14 @@ export default function Callback(props) {
       <Grid container>
         <Grid item xs={12}>
           <Paper className={styles.paper}>
-            TODO: Open in samltool.io button
+            <Button
+              variant="outlined"
+              color="primary"
+              className={styles.button}
+              onClick={sendToSamltool}
+            >
+              Open in SamlTool.io ↗
+            </Button>
           </Paper>
         </Grid>
         <Grid item xs={12}>

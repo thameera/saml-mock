@@ -10,10 +10,16 @@
 
 <body>
   <p id="redir-msg">Redirecting...</p>
+
   <form method="post" action="" id="response-form">
     <input type="hidden" name="SAMLResponse" value="" />
     <input type="hidden" name="RelayState" value="" />
   </form>
+
+  <form method="post" action="https://samltool.io" id="samltool">
+    <input type="hidden" name="SAMLResponse" value="" />
+  </form>
+
   <noscript>
     <p>
       Script is disabled. Click Submit to continue.
@@ -40,10 +46,29 @@
       }, 0)
     }
 
-    const url = new URL(window.location)
+    const postSamltool = () => {
+      const key = 'saml-mock:samltool'
+      const encoded = localStorage[key]
+      localStorage.removeItem(key)
 
-    if (url.searchParams.get('type') === 'response') {
+      const data = JSON.parse(atob(encoded))
+
+      const f = document.querySelector('#samltool')
+
+      f.elements[0].value = data.SAMLResponse
+
+      setTimeout(() => {
+        f.submit()
+      }, 0)
+    }
+
+    const url = new URL(window.location)
+    const type = url.searchParams.get('type')
+
+    if (type === 'response') {
       postResponse()
+    } else if (type === 'samltool') {
+      postSamltool()
     } else {
       alert('Invalid type')
       document.querySelector('#redir-msg').innerHTML = 'Error'
