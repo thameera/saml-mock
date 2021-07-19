@@ -2,6 +2,7 @@ import format from 'string-template'
 import { DateTime } from 'luxon'
 import zlib from 'zlib'
 import { canonicalize, generateId } from '../../lib/utils'
+import { signRedirectRequest } from '../../lib/signer'
 
 export default function handler(req, res) {
   if (req.method !== 'POST') {
@@ -22,10 +23,14 @@ export default function handler(req, res) {
   const deflated = zlib.deflateRawSync(Buffer.from(canonicalizedRequest))
   const SAMLRequest = deflated.toString('base64')
 
+  const params = {
+    SAMLRequest,
+    RelayState: body.relayState,
+  }
+
+  const qs = signRedirectRequest(params, { algo: 'rsa-sha1' })
+
   res.status(200).json({
-    qs: {
-      SAMLRequest,
-      RelayState: body.relayState,
-    },
+    qs,
   })
 }
