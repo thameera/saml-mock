@@ -1,4 +1,5 @@
 import Head from 'next/head'
+import Link from 'next/link'
 import {
   AppBar,
   Button,
@@ -29,7 +30,9 @@ export default function Callback(props) {
 
       <AppBar position="sticky" color="transparent">
         <Toolbar>
-          <Typography variant="h5">SAML Mock Callback</Typography>
+          <Typography variant="h5" className={styles.header}>
+            <Link href="/">SAML Mock</Link> Callback
+          </Typography>
           <div className={styles.grow} />
           <Button
             variant="contained"

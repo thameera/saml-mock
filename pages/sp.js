@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import Head from 'next/head'
+import Link from 'next/link'
 import {
   AppBar,
   Button,
@@ -70,7 +71,9 @@ export default function SP() {
 
       <AppBar position="sticky" color="transparent">
         <Toolbar>
-          <Typography variant="h5">SAML Mock SP</Typography>
+          <Typography variant="h5" className={styles.header}>
+            <Link href="/">SAML Mock</Link> SP
+          </Typography>
           <div className={styles.grow} />
           <Button
             variant="contained"

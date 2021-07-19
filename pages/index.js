@@ -20,7 +20,9 @@ export default function Home() {
 
       <AppBar position="sticky" color="transparent">
         <Toolbar>
-          <Typography variant="h5">SAML Mock</Typography>
+          <Typography variant="h5" className={styles.header}>
+            <Link href="/">SAML Mock</Link>
+          </Typography>
         </Toolbar>
       </AppBar>
 
