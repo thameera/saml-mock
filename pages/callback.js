@@ -70,6 +70,22 @@ export default function Callback(props) {
             />
           </Paper>
         </Grid>
+        <Grid item xs={3}>
+          <Paper className={styles.paper}>
+            <Typography variant="h6">RelayState</Typography>
+            {props.relayState ? (
+              <TextField
+                fullWidth
+                value={props.relayState}
+                multiline
+                maxRows={4}
+                InputProps={{ readOnly: true }}
+              />
+            ) : (
+              'No RelayState received'
+            )}
+          </Paper>
+        </Grid>
         <Grid item xs={12}>
           <Paper className={styles.paper}>
             <Typography variant="h6">Parsed XML</Typography>
@@ -94,7 +110,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       response: b.SAMLResponse || '',
-      relayState: b.RelayState || '',
+      relayState: b.RelayState || null,
       xml,
     },
   }
