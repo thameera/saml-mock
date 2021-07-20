@@ -25,60 +25,29 @@
     <input type="hidden" name="RelayState" value="" />
   </form>
 
-  <noscript>
-    <p>
-      Script is disabled. Click Submit to continue.
-    </p><input type="submit" value="Submit">
-  </noscript>
-
-
   <script>
-    const postResponse = () => {
-      const key = 'saml-mock:idp'
-      const encoded = localStorage[key]
-      localStorage.removeItem(key)
-
-      const data = JSON.parse(atob(encoded))
-
-      const f = document.querySelector('#response-form')
-      f.action = data.acsUrl
-
-      f.elements[0].value = data.SAMLResponse
-      f.elements[1].value = data.RelayState
-
-      setTimeout(() => {
-        f.submit()
-      }, 0)
+    const setError = (msg) => {
+      document.querySelector('#redir-msg').innerHTML = 'Error: ' + msg
     }
 
-    const postSamltool = () => {
-      const key = 'saml-mock:samltool'
+    const formPost = (selector, key, actionKey) => {
       const encoded = localStorage[key]
+      if (!encoded) {
+        return setError('No POST data found')
+      }
+
       localStorage.removeItem(key)
 
       const data = JSON.parse(atob(encoded))
 
-      const f = document.querySelector('#samltool')
+      const f = document.querySelector(selector)
+      if (actionKey) {
+        f.action = data[actionKey]
+      }
 
-      f.elements[0].value = data.SAMLResponse
-
-      setTimeout(() => {
-        f.submit()
-      }, 0)
-    }
-
-    const postRequest = () => {
-      const key = 'saml-mock:sp'
-      const encoded = localStorage[key]
-      localStorage.removeItem(key)
-
-      const data = JSON.parse(atob(encoded))
-
-      const f = document.querySelector('#request-form')
-      f.action = data.signinUrl
-
-      f.elements[0].value = data.SAMLRequest
-      f.elements[1].value = data.RelayState
+      f.querySelectorAll('input').forEach(el => {
+        el.value = data[el.name]
+      })
 
       setTimeout(() => {
         f.submit()
@@ -89,14 +58,13 @@
     const type = url.searchParams.get('type')
 
     if (type === 'response') {
-      postResponse()
+      formPost('#response-form', 'saml-mock:idp', 'acsUrl')
     } else if (type === 'samltool') {
-      postSamltool()
+      formPost('#samltool', 'saml-mock:samltool')
     } else if (type === 'request') {
-      postRequest()
+      formPost('#request-form', 'saml-mock:sp', 'signinUrl')
     } else {
-      alert('Invalid type')
-      document.querySelector('#redir-msg').innerHTML = 'Error'
+      setError('Invalid POST type')
     }
 
   </script>
