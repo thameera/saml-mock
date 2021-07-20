@@ -2,7 +2,7 @@ import format from 'string-template'
 import { DateTime } from 'luxon'
 import zlib from 'zlib'
 import { canonicalize, generateId } from '../../lib/utils'
-import { signRedirectRequest } from '../../lib/signer'
+import { signPostRequest, signRedirectRequest } from '../../lib/signer'
 
 export default function handler(req, res) {
   if (req.method !== 'POST') {
@@ -20,17 +20,30 @@ export default function handler(req, res) {
 
   const rawRequest = format(body.request, mappings)
   const canonicalizedRequest = canonicalize(rawRequest)
-  const deflated = zlib.deflateRawSync(Buffer.from(canonicalizedRequest))
-  const SAMLRequest = deflated.toString('base64')
 
-  const params = {
-    SAMLRequest,
-    RelayState: body.relayState,
+  if (body.binding === 'redirect') {
+    /* HTTP-Redirect */
+    const deflated = zlib.deflateRawSync(Buffer.from(canonicalizedRequest))
+    const SAMLRequest = deflated.toString('base64')
+
+    const qs = signRedirectRequest(
+      { SAMLRequest, RelayState: body.relayState },
+      { sigAlgo: 'rsa-sha1' }
+    )
+    return res.json(qs)
+  } else {
+    /* HTTP-POST */
+    const signedRequest = signPostRequest(canonicalizedRequest, {
+      sigAlgo: 'rsa-sha1',
+      digestAlgo: 'sha1',
+    })
+    const SAMLRequest = Buffer.from(signedRequest).toString('base64')
+
+    const data = {
+      signinUrl: body.signinUrl,
+      SAMLRequest,
+      RelayState: body.relayState,
+    }
+    return res.json(data)
   }
-
-  const qs = signRedirectRequest(params, { algo: 'rsa-sha1' })
-
-  res.status(200).json({
-    qs,
-  })
 }

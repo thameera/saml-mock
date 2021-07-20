@@ -20,6 +20,11 @@
     <input type="hidden" name="SAMLResponse" value="" />
   </form>
 
+  <form method="post" action="" id="request-form">
+    <input type="hidden" name="SAMLRequest" value="" />
+    <input type="hidden" name="RelayState" value="" />
+  </form>
+
   <noscript>
     <p>
       Script is disabled. Click Submit to continue.
@@ -62,6 +67,24 @@
       }, 0)
     }
 
+    const postRequest = () => {
+      const key = 'saml-mock:sp'
+      const encoded = localStorage[key]
+      localStorage.removeItem(key)
+
+      const data = JSON.parse(atob(encoded))
+
+      const f = document.querySelector('#request-form')
+      f.action = data.signinUrl
+
+      f.elements[0].value = data.SAMLRequest
+      f.elements[1].value = data.RelayState
+
+      setTimeout(() => {
+        f.submit()
+      }, 0)
+    }
+
     const url = new URL(window.location)
     const type = url.searchParams.get('type')
 
@@ -69,6 +92,8 @@
       postResponse()
     } else if (type === 'samltool') {
       postSamltool()
+    } else if (type === 'request') {
+      postRequest()
     } else {
       alert('Invalid type')
       document.querySelector('#redir-msg').innerHTML = 'Error'

@@ -4,8 +4,12 @@ import Link from 'next/link'
 import {
   AppBar,
   Button,
+  FormControl,
   Grid,
+  InputLabel,
+  MenuItem,
   Paper,
+  Select,
   TextField,
   Toolbar,
   Typography,
@@ -20,6 +24,7 @@ export default function SP() {
   const [request, setRequest] = useState(requestTemplate)
   const [signinUrl, setSigninUrl] = useState('')
   const [relayState, setRelayState] = useState(generateId())
+  const [binding, setBinding] = useState('redirect')
 
   const STORAGE_KEY = 'saml-mock:sp:url'
 
@@ -38,7 +43,7 @@ export default function SP() {
 
   const generateRedirectUrl = (data) => {
     const url = new URL(signinUrl)
-    for (const [key, value] of Object.entries(data.qs)) {
+    for (const [key, value] of Object.entries(data)) {
       url.searchParams.append(key, value)
     }
     return url.href
@@ -53,10 +58,18 @@ export default function SP() {
           request,
           signinUrl,
           relayState,
+          binding,
         },
       })
 
-      window.location = generateRedirectUrl(res.data)
+      if (binding === 'redirect') {
+        window.location = generateRedirectUrl(res.data)
+      } else {
+        // Save the info in localStorage, so they could be used by form post script in next page
+        localStorage['saml-mock:sp'] = btoa(JSON.stringify(res.data))
+
+        window.location = '/post.html?type=request'
+      }
     } catch (e) {
       console.log(e)
       // TODO: show error in UI
@@ -106,6 +119,22 @@ export default function SP() {
               value={relayState}
               onChange={(ev) => setRelayState(ev.target.value)}
             />
+          </Paper>
+        </Grid>
+        <Grid item xs={4}>
+          <Paper className={styles.paper}>
+            <FormControl className={styles.select}>
+              <InputLabel id="binding">Request Binding</InputLabel>
+              <Select
+                labelId="binding"
+                value={binding}
+                onChange={(ev) => setBinding(ev.target.value)}
+                className={styles.select}
+              >
+                <MenuItem value="redirect">HTTP-Redirect</MenuItem>
+                <MenuItem value="post">HTTP-Post</MenuItem>
+              </Select>
+            </FormControl>
           </Paper>
         </Grid>
 
