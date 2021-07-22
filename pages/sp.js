@@ -4,14 +4,19 @@ import Link from 'next/link'
 import {
   AppBar,
   Button,
+  Checkbox,
   FormControl,
+  FormControlLabel,
+  FormGroup,
   Grid,
   InputLabel,
   MenuItem,
+  NoSsr,
   Paper,
   Select,
   TextField,
   Toolbar,
+  Tooltip,
   Typography,
 } from '@material-ui/core'
 import axios from 'axios'
@@ -25,6 +30,11 @@ export default function SP() {
   const [signinUrl, setSigninUrl] = useState('')
   const [relayState, setRelayState] = useState(generateId())
   const [binding, setBinding] = useState('redirect')
+  const [sigOpts, setSigOpts] = useState({
+    signRequest: true,
+    sigAlgo: 'rsa-sha1',
+    digestAlgo: 'sha1',
+  })
 
   const STORAGE_KEY = 'saml-mock:sp:url'
 
@@ -59,8 +69,11 @@ export default function SP() {
           signinUrl,
           relayState,
           binding,
+          sigOpts,
         },
       })
+
+      console.log(res.data.SAMLRequest)
 
       if (binding === 'redirect') {
         window.location = generateRedirectUrl(res.data)
@@ -111,6 +124,7 @@ export default function SP() {
             />
           </Paper>
         </Grid>
+        {/* RelayState */}
         <Grid item xs={4}>
           <Paper className={styles.paper}>
             <TextField
@@ -121,8 +135,78 @@ export default function SP() {
             />
           </Paper>
         </Grid>
-        <Grid item xs={4}>
+
+        {/* Signature */}
+        <Grid item xs={6}>
           <Paper className={styles.paper}>
+            <Typography variant="h6">Signature</Typography>
+            <NoSsr>
+              <FormGroup row>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={sigOpts.signRequest}
+                      onChange={(ev) =>
+                        setSigOpts({
+                          ...sigOpts,
+                          signRequest: ev.target.checked,
+                        })
+                      }
+                      name="signRequest"
+                      color="primary"
+                    />
+                  }
+                  label="Sign Request"
+                />
+                <FormControl className={styles.select}>
+                  <InputLabel id="sig-algo">Signature Algorithm</InputLabel>
+                  <Select
+                    labelId="sig-algo"
+                    value={sigOpts.sigAlgo}
+                    onChange={(ev) =>
+                      setSigOpts({ ...sigOpts, sigAlgo: ev.target.value })
+                    }
+                    className={styles.select}
+                  >
+                    <MenuItem value="rsa-sha1">RSA-SHA1</MenuItem>
+                    <MenuItem value="rsa-sha256">RSA-SHA256</MenuItem>
+                  </Select>
+                </FormControl>
+                <Tooltip
+                  title={
+                    binding === 'redirect'
+                      ? 'No digest calculated in Redirect binding'
+                      : ''
+                  }
+                  placement="top"
+                >
+                  <FormControl
+                    className={styles.select}
+                    disabled={binding === 'redirect'}
+                  >
+                    <InputLabel id="digest-algo">Digest Algorithm</InputLabel>
+                    <Select
+                      labelId="digest-algo"
+                      value={sigOpts.digestAlgo}
+                      onChange={(ev) =>
+                        setSigOpts({ ...sigOpts, digestAlgo: ev.target.value })
+                      }
+                      className={styles.select}
+                    >
+                      <MenuItem value="sha1">SHA1</MenuItem>
+                      <MenuItem value="sha256">SHA256</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Tooltip>
+              </FormGroup>
+            </NoSsr>
+          </Paper>
+        </Grid>
+
+        {/* Binding */}
+        <Grid item xs={6}>
+          <Paper className={styles.paper}>
+            <Typography variant="h6">Options</Typography>
             <FormControl className={styles.select}>
               <InputLabel id="binding">Request Binding</InputLabel>
               <Select

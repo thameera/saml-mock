@@ -28,15 +28,12 @@ export default function handler(req, res) {
 
     const qs = signRedirectRequest(
       { SAMLRequest, RelayState: body.relayState },
-      { sigAlgo: 'rsa-sha1' }
+      body.sigOpts
     )
     return res.json(qs)
   } else {
     /* HTTP-POST */
-    const signedRequest = signPostRequest(canonicalizedRequest, {
-      sigAlgo: 'rsa-sha1',
-      digestAlgo: 'sha1',
-    })
+    const signedRequest = signPostRequest(canonicalizedRequest, body.sigOpts)
     const SAMLRequest = Buffer.from(signedRequest).toString('base64')
 
     const data = {
