@@ -24,6 +24,7 @@ import { requestTemplate } from '../lib/templates'
 import styles from '../styles/Home.module.css'
 import XMLEditor from '../components/XMLEditor'
 import { generateId } from '../lib/utils'
+import SPInstructionsDialog from '../components/SPInstructionsDialog'
 
 export default function SP() {
   const [request, setRequest] = useState(requestTemplate)
@@ -37,6 +38,8 @@ export default function SP() {
   })
   const [sendRequest, setSendRequest] = useState(true)
   const [sendRelayState, setSendRelayState] = useState(true)
+
+  const [instructionsOpen, setInstructionsOpen] = useState(false)
 
   const STORAGE_KEY = 'saml-mock:sp:url'
 
@@ -105,6 +108,14 @@ export default function SP() {
           <Typography variant="h5" className={styles.header}>
             <Link href="/">SAML Mock</Link> SP
           </Typography>
+          <Button
+            variant="outlined"
+            color="default"
+            className={styles.button}
+            onClick={() => setInstructionsOpen(true)}
+          >
+            Instructions
+          </Button>
           <div className={styles.grow} />
           <Button
             variant="contained"
@@ -271,6 +282,11 @@ export default function SP() {
           </Paper>
         </Grid>
       </Grid>
+
+      <SPInstructionsDialog
+        open={instructionsOpen}
+        onClose={() => setInstructionsOpen(false)}
+      />
     </>
   )
 }

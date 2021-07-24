@@ -4,7 +4,7 @@ import {
   DialogTitle,
   Typography,
 } from '@material-ui/core'
-import styles from './IdPInstructionsDialog.module.css'
+import styles from './InstructionsDialog.module.css'
 
 export default function IdPInstructionsDialog({ open, onClose }) {
   return (
@@ -15,15 +15,15 @@ export default function IdPInstructionsDialog({ open, onClose }) {
           SP Configuration
         </Typography>
         <Typography>
-          1. Download IdP cert from top-left button and upload in SP.
-        </Typography>
-        <Typography gutterBottom>
-          2. Set the sign-in URL to{' '}
+          1. Sign-in URL:{' '}
           <span className={styles.code}>
             https://saml-mock.vercel.app/idp?aud=
             <span className={styles.highlight}>SP_AUDIENCE</span>&acs_url=
             <span className={styles.highlight}>SP_ACS_URL</span>
           </span>
+        </Typography>
+        <Typography gutterBottom>
+          2. Certificate: Download from top-left button.
         </Typography>
         <Typography gutterBottom>
           Example:{' '}
