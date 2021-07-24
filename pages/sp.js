@@ -35,6 +35,8 @@ export default function SP() {
     sigAlgo: 'rsa-sha1',
     digestAlgo: 'sha1',
   })
+  const [sendRequest, setSendRequest] = useState(true)
+  const [sendRelayState, setSendRelayState] = useState(true)
 
   const STORAGE_KEY = 'saml-mock:sp:url'
 
@@ -70,6 +72,8 @@ export default function SP() {
           relayState,
           binding,
           sigOpts,
+          sendRequest,
+          sendRelayState,
         },
       })
 
@@ -78,8 +82,9 @@ export default function SP() {
       if (binding === 'redirect') {
         window.location = generateRedirectUrl(res.data)
       } else {
+        const data = { ...res.data, signinUrl }
         // Save the info in localStorage, so they could be used by form post script in next page
-        localStorage['saml-mock:sp'] = btoa(JSON.stringify(res.data))
+        localStorage['saml-mock:sp'] = btoa(JSON.stringify(data))
 
         window.location = '/post.html?type=request'
       }
@@ -129,6 +134,7 @@ export default function SP() {
           <Paper className={styles.paper}>
             <TextField
               fullWidth
+              disabled={!sendRelayState}
               label="RelayState"
               value={relayState}
               onChange={(ev) => setRelayState(ev.target.value)}
@@ -142,6 +148,7 @@ export default function SP() {
             <Typography variant="h6">Signature</Typography>
             <NoSsr>
               <FormGroup row>
+                {/* Sign Request? */}
                 <FormControlLabel
                   control={
                     <Checkbox
@@ -152,13 +159,15 @@ export default function SP() {
                           signRequest: ev.target.checked,
                         })
                       }
+                      disabled={!sendRequest}
                       name="signRequest"
                       color="primary"
                     />
                   }
                   label="Sign Request"
                 />
-                <FormControl className={styles.select}>
+                {/* Signature Algo */}
+                <FormControl className={styles.select} disabled={!sendRequest}>
                   <InputLabel id="sig-algo">Signature Algorithm</InputLabel>
                   <Select
                     labelId="sig-algo"
@@ -172,9 +181,10 @@ export default function SP() {
                     <MenuItem value="rsa-sha256">RSA-SHA256</MenuItem>
                   </Select>
                 </FormControl>
+                {/* Digest Algo */}
                 <Tooltip
                   title={
-                    binding === 'redirect'
+                    binding === 'redirect' && sendRequest
                       ? 'No digest calculated in Redirect binding'
                       : ''
                   }
@@ -203,22 +213,49 @@ export default function SP() {
           </Paper>
         </Grid>
 
-        {/* Binding */}
+        {/* Options */}
         <Grid item xs={6}>
           <Paper className={styles.paper}>
             <Typography variant="h6">Options</Typography>
-            <FormControl className={styles.select}>
-              <InputLabel id="binding">Request Binding</InputLabel>
-              <Select
-                labelId="binding"
-                value={binding}
-                onChange={(ev) => setBinding(ev.target.value)}
-                className={styles.select}
-              >
-                <MenuItem value="redirect">HTTP-Redirect</MenuItem>
-                <MenuItem value="post">HTTP-Post</MenuItem>
-              </Select>
-            </FormControl>
+            <NoSsr>
+              {/* Binding */}
+              <FormControl className={styles.select}>
+                <InputLabel id="binding">Request Binding</InputLabel>
+                <Select
+                  labelId="binding"
+                  value={binding}
+                  onChange={(ev) => setBinding(ev.target.value)}
+                  className={styles.select}
+                >
+                  <MenuItem value="redirect">HTTP-Redirect</MenuItem>
+                  <MenuItem value="post">HTTP-Post</MenuItem>
+                </Select>
+              </FormControl>
+              {/* Send Request */}
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={sendRequest}
+                    onChange={(ev) => setSendRequest(ev.target.checked)}
+                    name="sendRequest"
+                    color="primary"
+                  />
+                }
+                label="Send Request"
+              />
+              {/* Send RelayState */}
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={sendRelayState}
+                    onChange={(ev) => setSendRelayState(ev.target.checked)}
+                    name="sendRequest"
+                    color="primary"
+                  />
+                }
+                label="Send RelayState"
+              />
+            </NoSsr>
           </Paper>
         </Grid>
 
@@ -226,7 +263,11 @@ export default function SP() {
         <Grid item xs={12}>
           <Paper className={styles.paper}>
             <Typography variant="h6">Request</Typography>
-            <XMLEditor xmlStr={request} updateXmlStr={setRequest} />
+            <XMLEditor
+              xmlStr={request}
+              updateXmlStr={setRequest}
+              disabled={!sendRequest}
+            />
           </Paper>
         </Grid>
       </Grid>

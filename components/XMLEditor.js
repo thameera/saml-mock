@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Controlled as CodeMirror } from 'react-codemirror2'
 import styles from './XMLEditor.module.css'
 
-export default function XMLEditor({ xmlStr, updateXmlStr }) {
+export default function XMLEditor({ xmlStr, updateXmlStr, disabled }) {
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -22,7 +22,11 @@ export default function XMLEditor({ xmlStr, updateXmlStr }) {
         <CodeMirror
           value={xmlStr}
           className={styles.cmDiv}
-          options={{ mode: 'xml', theme: 'xq-light' }}
+          options={{
+            mode: disabled ? 'plain' : 'xml',
+            theme: 'xq-light',
+            readOnly: disabled,
+          }}
           onBeforeChange={handleChange}
         />
       )}

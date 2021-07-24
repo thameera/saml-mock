@@ -46,7 +46,12 @@
       }
 
       f.querySelectorAll('input').forEach(el => {
-        el.value = data[el.name]
+        if (data[el.name]) {
+          el.value = data[el.name]
+        } else {
+          // If the key is not present, we are not sending that attribute
+          el.remove()
+        }
       })
 
       setTimeout(() => {
