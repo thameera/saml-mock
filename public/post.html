@@ -46,7 +46,7 @@
       }
 
       f.querySelectorAll('input').forEach(el => {
-        if (data[el.name]) {
+        if (typeof data[el.name] !== 'undefined') {
           el.value = data[el.name]
         } else {
           // If the key is not present, we are not sending that attribute
