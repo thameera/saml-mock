@@ -44,7 +44,7 @@ export default function IdP(props) {
     try {
       const res = await axios({
         method: 'POST',
-        url: '/api/continue',
+        url: '/api/prepareResponse',
         data: {
           ...props,
           assertion,
