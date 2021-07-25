@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
 import {
@@ -9,6 +9,9 @@ import {
   FormControlLabel,
   FormGroup,
   Grid,
+  IconButton,
+  Input,
+  InputAdornment,
   InputLabel,
   MenuItem,
   NoSsr,
@@ -16,8 +19,10 @@ import {
   Select,
   TextField,
   Toolbar,
+  Tooltip,
   Typography,
 } from '@material-ui/core'
+import CachedIcon from '@material-ui/icons/Cached'
 import axios from 'axios'
 import XMLEditor from '../components/XMLEditor'
 import { assertionTemplate, responseTemplate } from '../lib/templates'
@@ -39,6 +44,69 @@ export default function IdP(props) {
   })
 
   const [instructionsOpen, setInstructionsOpen] = useState(false)
+  const [prevValues, setPrevValues] = useState({})
+
+  const STORAGE_KEY = 'saml-mock:idp:data'
+
+  useEffect(() => {
+    // At page load, load the previously saved aud and acs url
+    const data = localStorage[STORAGE_KEY]
+    if (data && data.length > 0) {
+      setPrevValues(JSON.parse(data))
+    }
+  }, [])
+
+  useEffect(() => {
+    // Persist ACS URL and audience in localStorage
+    if (acsUrl.length === 0 && aud.length === 0) {
+      return
+    }
+    const data = {
+      acsUrl: acsUrl.length > 0 ? acsUrl : prevValues.acsUrl,
+      aud: aud.length > 0 ? aud : prevValues.aud,
+    }
+    localStorage[STORAGE_KEY] = JSON.stringify(data)
+  }, [acsUrl, aud])
+
+  /*
+   * Button to restore cached ACS URL
+   */
+  const getAcsUrlAdornment = () => {
+    if (
+      acsUrl.length > 0 ||
+      !prevValues.acsUrl ||
+      prevValues.acsUrl.length === 0
+    ) {
+      return <></>
+    }
+    return (
+      <InputAdornment position="end">
+        <Tooltip title="Set previous ACS URL">
+          <IconButton onClick={() => setAcsUrl(prevValues.acsUrl)}>
+            <CachedIcon />
+          </IconButton>
+        </Tooltip>
+      </InputAdornment>
+    )
+  }
+
+  /*
+   * Button to restore cached Audience
+   */
+  const getAudAdornment = () => {
+    if (aud.length > 0 || !prevValues.aud || prevValues.aud.length === 0) {
+      return <></>
+    }
+    return (
+      <InputAdornment position="end">
+        <Tooltip title="Set previous Audience">
+          <IconButton onClick={() => setAud(prevValues.aud)}>
+            <CachedIcon />
+          </IconButton>
+        </Tooltip>
+      </InputAdornment>
+    )
+  }
 
   const submit = async () => {
     try {
@@ -121,20 +189,30 @@ export default function IdP(props) {
                 />
               </Grid>
               <Grid item xs={4}>
-                <TextField
-                  fullWidth
-                  label="Audience"
-                  value={aud}
-                  onChange={(ev) => setAud(ev.target.value)}
-                />
+                <FormControl fullWidth>
+                  <InputLabel htmlFor="audInput">Audience</InputLabel>
+                  <Input
+                    id="audInput"
+                    fullWidth
+                    type="text"
+                    value={aud}
+                    onChange={(ev) => setAud(ev.target.value)}
+                    endAdornment={getAudAdornment()}
+                  />
+                </FormControl>
               </Grid>
               <Grid item xs={4}>
-                <TextField
-                  fullWidth
-                  label="ACS URL"
-                  value={acsUrl}
-                  onChange={(ev) => setAcsUrl(ev.target.value)}
-                />
+                <FormControl fullWidth>
+                  <InputLabel htmlFor="acsUrlInput">ACS URL</InputLabel>
+                  <Input
+                    id="acsUrlInput"
+                    fullWidth
+                    type="text"
+                    value={acsUrl}
+                    onChange={(ev) => setAcsUrl(ev.target.value)}
+                    endAdornment={getAcsUrlAdornment()}
+                  />
+                </FormControl>
               </Grid>
             </Grid>
           </Paper>
@@ -251,7 +329,6 @@ export default function IdP(props) {
 
 export async function getServerSideProps(context) {
   const q = context.query
-  // TODO: show warnings when aud or acsUrl isn't present
 
   return {
     props: {
