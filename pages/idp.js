@@ -181,12 +181,17 @@ export default function IdP(props) {
             <Typography variant="h6">SP Attributes</Typography>
             <Grid container>
               <Grid item xs={4}>
-                <TextField
-                  fullWidth
-                  label="RelayState"
-                  value={relayState}
-                  onChange={(ev) => setRelayState(ev.target.value)}
-                />
+                <FormControl fullWidth>
+                  <InputLabel htmlFor="acsUrlInput">ACS URL</InputLabel>
+                  <Input
+                    id="acsUrlInput"
+                    fullWidth
+                    type="text"
+                    value={acsUrl}
+                    onChange={(ev) => setAcsUrl(ev.target.value)}
+                    endAdornment={getAcsUrlAdornment()}
+                  />
+                </FormControl>
               </Grid>
               <Grid item xs={4}>
                 <FormControl fullWidth>
@@ -202,17 +207,12 @@ export default function IdP(props) {
                 </FormControl>
               </Grid>
               <Grid item xs={4}>
-                <FormControl fullWidth>
-                  <InputLabel htmlFor="acsUrlInput">ACS URL</InputLabel>
-                  <Input
-                    id="acsUrlInput"
-                    fullWidth
-                    type="text"
-                    value={acsUrl}
-                    onChange={(ev) => setAcsUrl(ev.target.value)}
-                    endAdornment={getAcsUrlAdornment()}
-                  />
-                </FormControl>
+                <TextField
+                  fullWidth
+                  label="RelayState"
+                  value={relayState}
+                  onChange={(ev) => setRelayState(ev.target.value)}
+                />
               </Grid>
             </Grid>
           </Paper>
