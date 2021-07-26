@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
 import {
@@ -28,6 +28,7 @@ import XMLEditor from '../components/XMLEditor'
 import { assertionTemplate, responseTemplate } from '../lib/templates'
 import styles from '../styles/Home.module.css'
 import IdPInstructionsDialog from '../components/IdPInstructionsDialog'
+import ErrorNotification from '../components/ErrorNotification'
 
 export default function IdP(props) {
   const [assertion, setAssertion] = useState(assertionTemplate)
@@ -45,6 +46,8 @@ export default function IdP(props) {
 
   const [instructionsOpen, setInstructionsOpen] = useState(false)
   const [prevValues, setPrevValues] = useState({})
+
+  const notificationRef = useRef()
 
   const STORAGE_KEY = 'saml-mock:idp:data'
 
@@ -131,7 +134,9 @@ export default function IdP(props) {
       window.location = '/post.html?type=response'
     } catch (e) {
       console.log(e)
-      // TODO: show error in UI
+      notificationRef.current.notify(
+        'Error generating SAML Response. See console for details.'
+      )
     }
   }
 
@@ -323,6 +328,8 @@ export default function IdP(props) {
         open={instructionsOpen}
         onClose={() => setInstructionsOpen(false)}
       />
+
+      <ErrorNotification ref={notificationRef} />
     </>
   )
 }

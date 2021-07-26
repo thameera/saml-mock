@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
 import {
@@ -11,10 +12,23 @@ import {
 } from '@material-ui/core'
 import xmlFormat from 'xml-formatter'
 import parse from 'urlencoded-body-parser'
-import styles from '../styles/Home.module.css'
 import XMLEditor from '../components/XMLEditor'
+import styles from '../styles/Home.module.css'
+import ErrorNotification from '../components/ErrorNotification'
 
 export default function Callback(props) {
+  const notificationRef = useRef()
+
+  // If there are errors during load, show error notification
+  useEffect(() => {
+    if (props.err) {
+      console.log(props.err)
+      notificationRef.current.notify(
+        'There were errors parsing the response. See console for details.'
+      )
+    }
+  }, [])
+
   const sendToSamltool = () => {
     const data = { SAMLResponse: props.response }
     localStorage['saml-mock:samltool'] = btoa(JSON.stringify(data))
@@ -25,7 +39,7 @@ export default function Callback(props) {
   return (
     <>
       <Head>
-        <title>SAML Mock SP</title>
+        <title>SAML Mock Callback</title>
       </Head>
 
       <AppBar position="sticky" color="transparent">
@@ -93,25 +107,35 @@ export default function Callback(props) {
           </Paper>
         </Grid>
       </Grid>
+
+      <ErrorNotification ref={notificationRef} />
     </>
   )
 }
 
 export async function getServerSideProps(context) {
-  // TODO: error handle, support GET
-  const b = context.req.method === 'POST' ? await parse(context.req) : {}
+  // TODO: support GET
+  try {
+    const b = context.req.method === 'POST' ? await parse(context.req) : {}
 
-  let xml = ''
-  if (b.SAMLResponse) {
-    const decoded = Buffer.from(b.SAMLResponse, 'base64').toString()
-    xml = xmlFormat(decoded)
-  }
+    let xml = ''
+    if (b.SAMLResponse) {
+      const decoded = Buffer.from(b.SAMLResponse, 'base64').toString()
+      xml = xmlFormat(decoded)
+    }
 
-  return {
-    props: {
-      response: b.SAMLResponse || '',
-      relayState: b.RelayState || null,
-      xml,
-    },
+    return {
+      props: {
+        response: b.SAMLResponse || '',
+        relayState: b.RelayState || null,
+        xml,
+      },
+    }
+  } catch (e) {
+    return {
+      props: {
+        err: e,
+      },
+    }
   }
 }

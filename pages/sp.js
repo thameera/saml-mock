@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
 import {
@@ -25,6 +25,7 @@ import styles from '../styles/Home.module.css'
 import XMLEditor from '../components/XMLEditor'
 import { generateId } from '../lib/utils'
 import SPInstructionsDialog from '../components/SPInstructionsDialog'
+import ErrorNotification from '../components/ErrorNotification'
 
 export default function SP() {
   const [request, setRequest] = useState(requestTemplate)
@@ -40,6 +41,8 @@ export default function SP() {
   const [sendRelayState, setSendRelayState] = useState(true)
 
   const [instructionsOpen, setInstructionsOpen] = useState(false)
+
+  const notificationRef = useRef()
 
   const STORAGE_KEY = 'saml-mock:sp:url'
 
@@ -93,7 +96,9 @@ export default function SP() {
       }
     } catch (e) {
       console.log(e)
-      // TODO: show error in UI
+      notificationRef.current.notify(
+        'Error generating SAML Request. See console for details.'
+      )
     }
   }
 
@@ -287,6 +292,8 @@ export default function SP() {
         open={instructionsOpen}
         onClose={() => setInstructionsOpen(false)}
       />
+
+      <ErrorNotification ref={notificationRef} />
     </>
   )
 }
