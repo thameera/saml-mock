@@ -61,7 +61,8 @@ export default function Home() {
               <a
                 href="https://samltool.io"
                 target="_blank"
-                className={styles.link} rel="noreferrer"
+                className={styles.link}
+                rel="noreferrer"
               >
                 samltool.io
               </a>

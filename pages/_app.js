@@ -9,9 +9,15 @@ import 'codemirror/lib/codemirror.css'
 import 'codemirror/theme/xq-light.css'
 import '../styles/globals.css'
 
-// Using this to get rid of React strict mode warnings
+// Using this (instead of createTheme) to get rid of React strict mode warnings
 // https://stackoverflow.com/a/64135466/390522
-const theme = unstable_createMuiStrictModeTheme({})
+const theme = unstable_createMuiStrictModeTheme({
+  palette: {
+    primary: {
+      main: '#076b26',
+    },
+  },
+})
 
 function MyApp({ Component, pageProps }) {
   return (
