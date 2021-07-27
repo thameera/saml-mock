@@ -52,7 +52,35 @@ export default function Home() {
               </Card>
             </Link>
           </Grid>
+          <Grid item xs={12} className={styles.samltoolBanner}>
+            <Typography>
+              Looking to decode and analyze SAML requests and responses?
+            </Typography>
+            <Typography>
+              Visit{' '}
+              <a
+                href="https://samltool.io"
+                target="_blank"
+                className={styles.link} rel="noreferrer"
+              >
+                samltool.io
+              </a>
+              !
+            </Typography>
+          </Grid>
         </Grid>
+      </Container>
+
+      <Container maxWidth="sm" className={styles.bottomContainer}>
+        <Typography>
+          Contribute and report bugs at{' '}
+          <a
+            href="https://github.com/thameera/saml-mock"
+            className={styles.link}
+          >
+            Github
+          </a>
+        </Typography>
       </Container>
     </>
   )

@@ -36,3 +36,21 @@
   color: #000;
   text-decoration: none;
 }
+
+.link {
+  text-decoration: none;
+  color: rgb(7, 102, 38);
+}
+
+.link:visited {
+  color: rgb(7, 102, 38);
+}
+
+.samltoolBanner {
+  padding-top: 40px !important;
+  text-align: center;
+}
+
+.bottomContainer {
+  text-align: center;
+}
