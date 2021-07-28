@@ -43,6 +43,8 @@ export default function IdP(props) {
     sigAlgo: 'rsa-sha1',
     digestAlgo: 'sha1',
   })
+  const [sendResponse, setSendResponse] = useState(true)
+  const [sendRelayState, setSendRelayState] = useState(true)
 
   const [instructionsOpen, setInstructionsOpen] = useState(false)
   const [prevValues, setPrevValues] = useState({})
@@ -125,6 +127,8 @@ export default function IdP(props) {
           acsUrl,
           issuer,
           sigOpts,
+          sendResponse,
+          sendRelayState,
         },
       })
       // Save the info in localStorage, so they could be used by form post script in next page
@@ -185,7 +189,7 @@ export default function IdP(props) {
           <Paper className={styles.paper}>
             <Typography variant="h6">SP Attributes</Typography>
             <Grid container>
-              <Grid item xs={4}>
+              <Grid item xs={6}>
                 <FormControl fullWidth>
                   <InputLabel htmlFor="acsUrlInput">ACS URL</InputLabel>
                   <Input
@@ -198,7 +202,7 @@ export default function IdP(props) {
                   />
                 </FormControl>
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={3}>
                 <FormControl fullWidth>
                   <InputLabel htmlFor="audInput">Audience</InputLabel>
                   <Input
@@ -211,7 +215,7 @@ export default function IdP(props) {
                   />
                 </FormControl>
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={3}>
                 <TextField
                   fullWidth
                   label="RelayState"
@@ -224,7 +228,7 @@ export default function IdP(props) {
         </Grid>
 
         {/* IdP Attributes */}
-        <Grid item xs={4}>
+        <Grid item xs={2}>
           <Paper className={styles.paper}>
             <Typography variant="h6">IdP Attributes</Typography>
             <TextField
@@ -237,7 +241,7 @@ export default function IdP(props) {
         </Grid>
 
         {/* Signature */}
-        <Grid item xs={8}>
+        <Grid item xs={6}>
           <Paper className={styles.paper}>
             <Typography variant="h6">Signature</Typography>
             <NoSsr>
@@ -302,6 +306,39 @@ export default function IdP(props) {
                     <MenuItem value="sha256">SHA256</MenuItem>
                   </Select>
                 </FormControl>
+              </FormGroup>
+            </NoSsr>
+          </Paper>
+        </Grid>
+
+        {/* Options */}
+        <Grid item xs={4}>
+          <Paper className={styles.paper}>
+            <Typography variant="h6">Options</Typography>
+            <NoSsr>
+              <FormGroup row>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={sendResponse}
+                      onChange={(ev) => setSendResponse(ev.target.checked)}
+                      name="sendResponse"
+                      color="primary"
+                    />
+                  }
+                  label="Send Response"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={sendRelayState}
+                      onChange={(ev) => setSendRelayState(ev.target.checked)}
+                      name="sendRelayState"
+                      color="primary"
+                    />
+                  }
+                  label="Send RelayState"
+                />
               </FormGroup>
             </NoSsr>
           </Paper>

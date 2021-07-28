@@ -11,6 +11,17 @@ export default function handler(req, res) {
 
   const body = req.body
 
+  const responseParams = { acsUrl: body.acsUrl }
+
+  if (body.sendRelayState) {
+    responseParams.RelayState = body.relayState
+  }
+
+  // If we are not sending the response, exit early
+  if (!body.sendResponse) {
+    return res.json(responseParams)
+  }
+
   const parsedReq = body.samlreq ? parseSamlRequest(body.samlreq) : {}
   if (parsedReq.error) {
     return res.status(400).json({ parsedReq })
@@ -41,11 +52,7 @@ export default function handler(req, res) {
   const canonicalizedResponse = canonicalize(response)
   const finalResponseXml = signResponse(canonicalizedResponse, body.sigOpts)
 
-  const SAMLResponse = Buffer.from(finalResponseXml).toString('base64')
+  responseParams.SAMLResponse = Buffer.from(finalResponseXml).toString('base64')
 
-  res.status(200).json({
-    SAMLResponse,
-    RelayState: body.relayState,
-    acsUrl: body.acsUrl,
-  })
+  res.json(responseParams)
 }
