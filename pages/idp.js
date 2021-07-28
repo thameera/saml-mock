@@ -114,6 +114,11 @@ export default function IdP(props) {
   }
 
   const submit = async () => {
+    if (!acsUrl) {
+      notificationRef.current.notify('ACS URL cannot be empty')
+      return
+    }
+
     try {
       const res = await axios({
         method: 'POST',

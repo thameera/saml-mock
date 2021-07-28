@@ -68,6 +68,11 @@ export default function SP() {
   }
 
   const submit = async () => {
+    if (!signinUrl) {
+      notificationRef.current.notify('Sign-in URL cannot be empty')
+      return
+    }
+
     try {
       const res = await axios({
         method: 'POST',
