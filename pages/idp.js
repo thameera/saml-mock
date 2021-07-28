@@ -211,6 +211,7 @@ export default function IdP(props) {
                     type="text"
                     value={aud}
                     onChange={(ev) => setAud(ev.target.value)}
+                    disabled={!sendResponse}
                     endAdornment={getAudAdornment()}
                   />
                 </FormControl>
@@ -221,6 +222,7 @@ export default function IdP(props) {
                   label="RelayState"
                   value={relayState}
                   onChange={(ev) => setRelayState(ev.target.value)}
+                  disabled={!sendRelayState}
                 />
               </Grid>
             </Grid>
@@ -236,6 +238,7 @@ export default function IdP(props) {
               label="Issuer"
               value={issuer}
               onChange={(ev) => setIssuer(ev.target.value)}
+              disabled={!sendResponse}
             />
           </Paper>
         </Grid>
@@ -256,6 +259,7 @@ export default function IdP(props) {
                           signAssertion: ev.target.checked,
                         })
                       }
+                      disabled={!sendResponse}
                       name="signAssertion"
                       color="primary"
                     />
@@ -272,6 +276,7 @@ export default function IdP(props) {
                           signResponse: ev.target.checked,
                         })
                       }
+                      disabled={!sendResponse}
                       name="signResponse"
                       color="primary"
                     />
@@ -286,6 +291,7 @@ export default function IdP(props) {
                     onChange={(ev) =>
                       setSigOpts({ ...sigOpts, sigAlgo: ev.target.value })
                     }
+                    disabled={!sendResponse}
                     className={styles.select}
                   >
                     <MenuItem value="rsa-sha1">RSA-SHA1</MenuItem>
@@ -300,6 +306,7 @@ export default function IdP(props) {
                     onChange={(ev) =>
                       setSigOpts({ ...sigOpts, digestAlgo: ev.target.value })
                     }
+                    disabled={!sendResponse}
                     className={styles.select}
                   >
                     <MenuItem value="sha1">SHA1</MenuItem>
@@ -348,7 +355,11 @@ export default function IdP(props) {
         <Grid item xs={12}>
           <Paper className={styles.paper}>
             <Typography variant="h6">Response</Typography>
-            <XMLEditor xmlStr={response} updateXmlStr={setResponse} />
+            <XMLEditor
+              xmlStr={response}
+              updateXmlStr={setResponse}
+              disabled={!sendResponse}
+            />
           </Paper>
         </Grid>
 
@@ -356,7 +367,11 @@ export default function IdP(props) {
         <Grid item xs={12}>
           <Paper className={styles.paper}>
             <Typography variant="h6">Assertion</Typography>
-            <XMLEditor xmlStr={assertion} updateXmlStr={setAssertion} />
+            <XMLEditor
+              xmlStr={assertion}
+              updateXmlStr={setAssertion}
+              disabled={!sendResponse}
+            />
           </Paper>
         </Grid>
       </Grid>
