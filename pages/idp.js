@@ -163,14 +163,6 @@ export default function IdP(props) {
           <Button
             variant="outlined"
             color="default"
-            href="/api/downloadCert"
-            className={styles.button}
-          >
-            Download Certificate
-          </Button>
-          <Button
-            variant="outlined"
-            color="default"
             className={styles.button}
             onClick={() => setInstructionsOpen(true)}
           >

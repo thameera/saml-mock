@@ -1,4 +1,5 @@
 import {
+  Button,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -9,7 +10,7 @@ import styles from './InstructionsDialog.module.css'
 export default function IdPInstructionsDialog({ open, onClose }) {
   return (
     <Dialog open={open} onClose={onClose} maxWidth="lg">
-      <DialogTitle>Instructions</DialogTitle>
+      <DialogTitle>IdP Instructions</DialogTitle>
       <DialogContent>
         <Typography variant="h4" gutterBottom>
           SP Configuration
@@ -23,13 +24,16 @@ export default function IdPInstructionsDialog({ open, onClose }) {
           </span>
         </Typography>
         <Typography gutterBottom>
-          2. Certificate: Download from top-left button.
+          2. Certificate:{' '}
+          <Button href="/api/downloadCert" color="primary">
+            Download certificate
+          </Button>
         </Typography>
         <Typography gutterBottom>
-          Example:{' '}
-          <span className={styles.code}>
+          Example sign-in URL:{' '}
+          <div className={styles.code}>
             https://saml-mock.vercel.app/idp?aud=urn:auth0:tham:mock-saml&acs_url=https://tham.auth0.com/login/callback
-          </span>
+          </div>
         </Typography>
 
         <div className={styles.spacer}></div>

@@ -10,23 +10,23 @@ import styles from './InstructionsDialog.module.css'
 export default function SPInstructionsDialog({ open, onClose }) {
   return (
     <Dialog open={open} onClose={onClose} maxWidth="lg">
-      <DialogTitle>Instructions</DialogTitle>
+      <DialogTitle>SP Instructions</DialogTitle>
       <DialogContent>
         <Typography variant="h4" gutterBottom>
           IdP Configuration
         </Typography>
         <Typography>
-          ACS URL:{' '}
+          1. ACS URL:{' '}
           <span className={styles.code}>
             https://saml-mock.vercel.app/callback
           </span>
         </Typography>
         <Typography>
-          Audience (Optional): Any value (eg:{' '}
+          2. (Optional) Audience: Any value (eg:{' '}
           <span className={styles.code}>saml-mock</span>)
         </Typography>
         <Typography>
-          Certificate (Optional):{' '}
+          3. (Optional) Certificate:{' '}
           <Button href="/api/downloadCert" color="primary">
             Download certificate
           </Button>
