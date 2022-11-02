@@ -114,9 +114,9 @@ export default function Callback(props) {
 }
 
 export async function getServerSideProps(context) {
-  // TODO: support GET
   try {
-    const b = context.req.method === 'POST' ? await parse(context.req) : {}
+    const b =
+      context.req.method === 'POST' ? await parse(context.req) : context.query
 
     let xml = ''
     if (b.SAMLResponse) {
