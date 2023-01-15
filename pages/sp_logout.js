@@ -26,6 +26,7 @@ import XMLEditor from '../components/XMLEditor'
 import ErrorNotification from '../components/ErrorNotification'
 import { generateId, generateRedirectUrl } from '../lib/utils'
 import { useRouter } from 'next/router'
+import SPLogoutInstructionsDialog from '../components/SPLogoutInstructionsDialog'
 
 export default function SPLogout(props) {
   const [request, setRequest] = useState(logoutRequestTemplate)
@@ -38,6 +39,8 @@ export default function SPLogout(props) {
     digestAlgo: 'sha1',
   })
   const [sendRelayState, setSendRelayState] = useState(false)
+
+  const [instructionsOpen, setInstructionsOpen] = useState(false)
 
   const notificationRef = useRef()
   const router = useRouter()
@@ -120,6 +123,14 @@ export default function SPLogout(props) {
           <Typography variant="h5" className={styles.header}>
             <Link href="/">SAML Mock</Link> SP: Logout
           </Typography>
+          <Button
+            variant="outlined"
+            color="default"
+            className={styles.button}
+            onClick={() => setInstructionsOpen(true)}
+          >
+            Instructions
+          </Button>
           <div className={styles.grow} />
           <Button
             variant="contained"
@@ -277,6 +288,11 @@ export default function SPLogout(props) {
           </Paper>
         </Grid>
       </Grid>
+
+      <SPLogoutInstructionsDialog
+        open={instructionsOpen}
+        onClose={() => setInstructionsOpen(false)}
+      />
 
       <ErrorNotification ref={notificationRef} />
     </>
