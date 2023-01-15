@@ -1,8 +1,8 @@
-import format from 'string-template'
 import { DateTime } from 'luxon'
+import format from 'string-template'
 import zlib from 'zlib'
+import { signPostLogoutRequest, signRedirectRequest } from '../../lib/signer'
 import { canonicalize, generateId } from '../../lib/utils'
-import { signPostAuthnRequest, signRedirectRequest } from '../../lib/signer'
 
 export default function handler(req, res) {
   if (req.method !== 'POST') {
@@ -11,18 +11,10 @@ export default function handler(req, res) {
 
   const body = req.body
 
-  // If we are not sending the request, exit early
-  if (!body.sendRequest) {
-    if (!body.sendRelayState) {
-      return res.json({})
-    }
-    return res.json({ RelayState: body.relayState })
-  }
-
   const mappings = {
     id: generateId(),
     issueTime: DateTime.now().toUTC().toISO(),
-    signinUrl: body.signinUrl,
+    logoutUrl: body.logoutUrl,
     issuer: 'saml-mock',
   }
 
@@ -43,7 +35,7 @@ export default function handler(req, res) {
     return res.json(qs)
   } else {
     /* HTTP-POST */
-    const signedRequest = signPostAuthnRequest(
+    const signedRequest = signPostLogoutRequest(
       canonicalizedRequest,
       body.sigOpts
     )

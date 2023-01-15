@@ -20,16 +20,16 @@ import {
   Typography,
 } from '@material-ui/core'
 import axios from 'axios'
-import { requestTemplate } from '../lib/templates'
 import styles from '../styles/Home.module.css'
+import { logoutRequestTemplate } from '../lib/templates'
 import XMLEditor from '../components/XMLEditor'
-import { generateId, generateRedirectUrl } from '../lib/utils'
-import SPInstructionsDialog from '../components/SPInstructionsDialog'
 import ErrorNotification from '../components/ErrorNotification'
+import { generateId, generateRedirectUrl } from '../lib/utils'
+import { useRouter } from 'next/router'
 
-export default function SP() {
-  const [request, setRequest] = useState(requestTemplate)
-  const [signinUrl, setSigninUrl] = useState('')
+export default function SPLogout(props) {
+  const [request, setRequest] = useState(logoutRequestTemplate)
+  const [logoutUrl, setLogoutUrl] = useState('')
   const [relayState, setRelayState] = useState(generateId())
   const [binding, setBinding] = useState('redirect')
   const [sigOpts, setSigOpts] = useState({
@@ -37,45 +37,55 @@ export default function SP() {
     sigAlgo: 'rsa-sha1',
     digestAlgo: 'sha1',
   })
-  const [sendRequest, setSendRequest] = useState(true)
-  const [sendRelayState, setSendRelayState] = useState(true)
-
-  const [instructionsOpen, setInstructionsOpen] = useState(false)
+  const [sendRelayState, setSendRelayState] = useState(false)
 
   const notificationRef = useRef()
+  const router = useRouter()
 
-  const STORAGE_KEY = 'saml-mock:sp:url'
+  const STORAGE_KEY = 'saml-mock:sp_logout:url'
 
   useEffect(() => {
-    // Load saved sign-in URL
+    // Load saved logout URL
     const url = localStorage[STORAGE_KEY]
     if (url) {
-      setSigninUrl(url)
+      setLogoutUrl(url)
     }
   }, [])
 
   useEffect(() => {
-    // Persist any changes to sign-in URL in localStorage
-    localStorage[STORAGE_KEY] = signinUrl
-  }, [signinUrl])
+    // Persist any changes to logout URL in localStorage
+    localStorage[STORAGE_KEY] = logoutUrl
+  }, [logoutUrl])
+
+  useEffect(() => {
+    console.log(router.query)
+    const { nameId, sessionIndex } = router.query
+    let template = logoutRequestTemplate
+    if (nameId) {
+      template = template.replace('ENTER_NAME_ID_HERE', nameId)
+    }
+    if (sessionIndex) {
+      template = template.replace('ENTER_SESSION_INDEX_HERE', sessionIndex)
+    }
+    setRequest(template)
+  }, [router.query])
 
   const submit = async () => {
-    if (!signinUrl) {
-      notificationRef.current.notify('Sign-in URL cannot be empty')
+    if (!logoutUrl) {
+      notificationRef.current.notify('Logout URL cannot be empty')
       return
     }
 
     try {
       const res = await axios({
         method: 'POST',
-        url: '/api/prepareRequest',
+        url: '/api/prepareLogoutRequest',
         data: {
           request,
-          signinUrl,
+          logoutUrl,
           relayState,
           binding,
           sigOpts,
-          sendRequest,
           sendRelayState,
         },
       })
@@ -83,18 +93,18 @@ export default function SP() {
       console.log(res.data.SAMLRequest)
 
       if (binding === 'redirect') {
-        window.location = generateRedirectUrl(signinUrl, res.data)
+        window.location = generateRedirectUrl(logoutUrl, res.data)
       } else {
-        const data = { ...res.data, signinUrl }
+        const data = { ...res.data, logoutUrl }
         // Save the info in localStorage, so they could be used by form post script in next page
-        localStorage['saml-mock:sp'] = btoa(JSON.stringify(data))
+        localStorage['saml-mock:sp_logout'] = btoa(JSON.stringify(data))
 
-        window.location = '/post.html?type=request'
+        window.location = '/post.html?type=logout_request'
       }
     } catch (e) {
       console.log(e)
       notificationRef.current.notify(
-        'Error generating SAML Request. See console for details.'
+        'Error generating SAML Logout Request. See console for details.'
       )
     }
   }
@@ -102,23 +112,23 @@ export default function SP() {
   return (
     <>
       <Head>
-        <title>SAML Mock SP</title>
+        <title>SAML Mock SP: Logout</title>
       </Head>
 
       <AppBar position="sticky" color="transparent">
         <Toolbar>
           <Typography variant="h5" className={styles.header}>
-            <Link href="/">SAML Mock</Link> SP
+            <Link href="/">SAML Mock</Link> SP: Logout
           </Typography>
+          <div className={styles.grow} />
           <Button
-            variant="outlined"
+            variant="contained"
             color="default"
             className={styles.button}
-            onClick={() => setInstructionsOpen(true)}
+            href="/sp"
           >
-            Instructions
+            Back to SP
           </Button>
-          <div className={styles.grow} />
           <Button
             variant="contained"
             color="primary"
@@ -131,14 +141,14 @@ export default function SP() {
       </AppBar>
 
       <Grid container>
-        {/* Sign-in URL */}
+        {/* Logout URL */}
         <Grid item xs={8}>
           <Paper className={styles.paper}>
             <TextField
               fullWidth
-              label="Sign-in URL"
-              value={signinUrl}
-              onChange={(ev) => setSigninUrl(ev.target.value)}
+              label="IdP Logout URL"
+              value={logoutUrl}
+              onChange={(ev) => setLogoutUrl(ev.target.value)}
             />
           </Paper>
         </Grid>
@@ -148,7 +158,7 @@ export default function SP() {
             <TextField
               fullWidth
               disabled={!sendRelayState}
-              label="RelayState"
+              label="RelayState (optional)"
               value={relayState}
               onChange={(ev) => setRelayState(ev.target.value)}
             />
@@ -172,7 +182,6 @@ export default function SP() {
                           signRequest: ev.target.checked,
                         })
                       }
-                      disabled={!sendRequest}
                       name="signRequest"
                       color="primary"
                     />
@@ -180,7 +189,7 @@ export default function SP() {
                   label="Sign Request"
                 />
                 {/* Signature Algo */}
-                <FormControl className={styles.select} disabled={!sendRequest}>
+                <FormControl className={styles.select}>
                   <InputLabel id="sig-algo">Signature Algorithm</InputLabel>
                   <Select
                     labelId="sig-algo"
@@ -197,7 +206,7 @@ export default function SP() {
                 {/* Digest Algo */}
                 <Tooltip
                   title={
-                    binding === 'redirect' && sendRequest
+                    binding === 'redirect'
                       ? 'No digest calculated in Redirect binding'
                       : ''
                   }
@@ -244,18 +253,6 @@ export default function SP() {
                   <MenuItem value="post">HTTP-Post</MenuItem>
                 </Select>
               </FormControl>
-              {/* Send Request */}
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={sendRequest}
-                    onChange={(ev) => setSendRequest(ev.target.checked)}
-                    name="sendRequest"
-                    color="primary"
-                  />
-                }
-                label="Send Request"
-              />
               {/* Send RelayState */}
               <FormControlLabel
                 control={
@@ -272,23 +269,14 @@ export default function SP() {
           </Paper>
         </Grid>
 
-        {/* AuthnRequest */}
+        {/* LogoutRequest */}
         <Grid item xs={12}>
           <Paper className={styles.paper}>
             <Typography variant="h6">Request</Typography>
-            <XMLEditor
-              xmlStr={request}
-              updateXmlStr={setRequest}
-              disabled={!sendRequest}
-            />
+            <XMLEditor xmlStr={request} updateXmlStr={setRequest} />
           </Paper>
         </Grid>
       </Grid>
-
-      <SPInstructionsDialog
-        open={instructionsOpen}
-        onClose={() => setInstructionsOpen(false)}
-      />
 
       <ErrorNotification ref={notificationRef} />
     </>

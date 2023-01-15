@@ -15,9 +15,15 @@ import parse from 'urlencoded-body-parser'
 import XMLEditor from '../components/XMLEditor'
 import styles from '../styles/Home.module.css'
 import ErrorNotification from '../components/ErrorNotification'
+import xmldom from 'xmldom'
 
 export default function Callback(props) {
   const notificationRef = useRef()
+
+  // Set up logout URL only if this is a login response
+  const logoutHref = props.isLogoutResponse
+    ? ''
+    : `/sp_logout?nameId=${props.nameId}&sessionIndex=${props.sessionIndex}`
 
   // If there are errors during load, show error notification
   useEffect(() => {
@@ -50,12 +56,22 @@ export default function Callback(props) {
           <div className={styles.grow} />
           <Button
             variant="contained"
-            color="primary"
+            color={props.isLogoutResponse ? 'primary' : 'default'}
             className={styles.button}
             href="/sp"
           >
-            New Request
+            New Login Request
           </Button>
+          {!props.isLogoutResponse && (
+            <Button
+              variant="contained"
+              color="primary"
+              className={styles.button}
+              href={logoutHref}
+            >
+              SAML Logout
+            </Button>
+          )}
         </Toolbar>
       </AppBar>
 
@@ -118,10 +134,30 @@ export async function getServerSideProps(context) {
     const b =
       context.req.method === 'POST' ? await parse(context.req) : context.query
 
-    let xml = ''
+    let xml = '',
+      nameId = '',
+      sessionIndex = '',
+      isLogoutResponse = false
+
     if (b.SAMLResponse) {
       const decoded = Buffer.from(b.SAMLResponse, 'base64').toString()
       xml = xmlFormat(decoded)
+
+      try {
+        const dom = new xmldom.DOMParser().parseFromString(decoded)
+        if (dom.getElementsByTagName('samlp:LogoutResponse').length > 0) {
+          isLogoutResponse = true
+        } else {
+          nameId =
+            dom.getElementsByTagName('saml:NameID')[0]?.childNodes[0]?.nodeValue
+          sessionIndex = dom
+            .getElementsByTagName('saml:AuthnStatement')[0]
+            ?.getAttribute('SessionIndex')
+          console.log(`Name ID: ${nameId}, Session Index: ${sessionIndex}`)
+        }
+      } catch (e) {
+        console.log(e)
+      }
     }
 
     return {
@@ -129,6 +165,9 @@ export async function getServerSideProps(context) {
         response: b.SAMLResponse || '',
         relayState: b.RelayState || null,
         xml,
+        isLogoutResponse,
+        nameId,
+        sessionIndex,
       },
     }
   } catch (e) {
