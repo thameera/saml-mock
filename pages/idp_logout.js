@@ -1,6 +1,4 @@
 import { useEffect, useRef, useState } from 'react'
-import Head from 'next/head'
-import Link from 'next/link'
 import {
   AppBar,
   Button,
@@ -23,38 +21,35 @@ import {
   Typography,
 } from '@material-ui/core'
 import CachedIcon from '@material-ui/icons/Cached'
-import axios from 'axios'
-import XMLEditor from '../components/XMLEditor'
-import { assertionTemplate, responseTemplate } from '../lib/templates'
+import Head from 'next/head'
+import Link from 'next/link'
+import { logoutResponseTemplate } from '../lib/templates'
 import styles from '../styles/Home.module.css'
-import IdPInstructionsDialog from '../components/IdPInstructionsDialog'
+import XMLEditor from '../components/XMLEditor'
 import ErrorNotification from '../components/ErrorNotification'
+import axios from 'axios'
 
-export default function IdP(props) {
-  const [assertion, setAssertion] = useState(assertionTemplate)
-  const [response, setResponse] = useState(responseTemplate)
+export default function IdpLogout(props) {
+  const [response, setResponse] = useState(logoutResponseTemplate)
   const [relayState, setRelayState] = useState(props.relayState)
-  const [aud, setAud] = useState(props.aud)
-  const [acsUrl, setAcsUrl] = useState(props.acsUrl)
+  const [callbackUrl, setCallbackUrl] = useState(props.callbackUrl)
   const [issuer, setIssuer] = useState('saml-mock')
   const [sigOpts, setSigOpts] = useState({
-    signAssertion: true,
     signResponse: false,
     sigAlgo: 'rsa-sha1',
     digestAlgo: 'sha1',
   })
   const [sendResponse, setSendResponse] = useState(true)
-  const [sendRelayState, setSendRelayState] = useState(true)
+  const [sendRelayState, setSendRelayState] = useState(!!props.relayState)
 
-  const [instructionsOpen, setInstructionsOpen] = useState(false)
   const [prevValues, setPrevValues] = useState({})
 
   const notificationRef = useRef()
 
-  const STORAGE_KEY = 'saml-mock:idp:data'
+  const STORAGE_KEY = 'saml-mock:idp_logout:data'
 
   useEffect(() => {
-    // At page load, load the previously saved aud and acs url
+    // At page load, load the previously saved callback url
     const data = localStorage[STORAGE_KEY]
     if (data && data.length > 0) {
       setPrevValues(JSON.parse(data))
@@ -62,51 +57,29 @@ export default function IdP(props) {
   }, [])
 
   useEffect(() => {
-    // Persist ACS URL and audience in localStorage
-    // But proceed only if at least one of them is set
-    if (acsUrl.length === 0 && aud.length === 0) {
+    // Persist Callback URL in localStorage
+    if (callbackUrl.length === 0) {
       return
     }
-    const data = {
-      acsUrl: acsUrl.length > 0 ? acsUrl : prevValues.acsUrl,
-      aud: aud.length > 0 ? aud : prevValues.aud,
-    }
+    const data = { callbackUrl }
     localStorage[STORAGE_KEY] = JSON.stringify(data)
-  }, [acsUrl, aud])
+  }, [callbackUrl])
 
   /*
-   * Button to restore cached ACS URL
+   * Button to restore cached Callback URL
    */
-  const getAcsUrlAdornment = () => {
+  const getCallbackUrlAdornment = () => {
     if (
-      acsUrl.length > 0 ||
-      !prevValues.acsUrl ||
-      prevValues.acsUrl.length === 0
+      callbackUrl.length > 0 ||
+      !prevValues.callbackUrl ||
+      prevValues.callbackUrl.length === 0
     ) {
       return <></>
     }
     return (
       <InputAdornment position="end">
-        <Tooltip title="Set previous ACS URL">
-          <IconButton onClick={() => setAcsUrl(prevValues.acsUrl)}>
-            <CachedIcon />
-          </IconButton>
-        </Tooltip>
-      </InputAdornment>
-    )
-  }
-
-  /*
-   * Button to restore cached Audience
-   */
-  const getAudAdornment = () => {
-    if (aud.length > 0 || !prevValues.aud || prevValues.aud.length === 0) {
-      return <></>
-    }
-    return (
-      <InputAdornment position="end">
-        <Tooltip title="Set previous Audience">
-          <IconButton onClick={() => setAud(prevValues.aud)}>
+        <Tooltip title="Set previous Callback URL">
+          <IconButton onClick={() => setCallbackUrl(prevValues.callbackUrl)}>
             <CachedIcon />
           </IconButton>
         </Tooltip>
@@ -115,22 +88,19 @@ export default function IdP(props) {
   }
 
   const submit = async () => {
-    if (!acsUrl) {
-      notificationRef.current.notify('ACS URL cannot be empty')
+    if (!callbackUrl) {
+      notificationRef.current.notify('Callback URL cannot be empty')
       return
     }
 
     try {
       const res = await axios({
         method: 'POST',
-        url: '/api/prepareResponse',
+        url: '/api/prepareLogoutResponse',
         data: {
           ...props,
-          assertion,
+          callbackUrl,
           response,
-          relayState,
-          aud,
-          acsUrl,
           issuer,
           sigOpts,
           sendResponse,
@@ -138,14 +108,14 @@ export default function IdP(props) {
         },
       })
       // Save the info in localStorage, so they could be used by form post script in next page
-      localStorage['saml-mock:idp'] = btoa(JSON.stringify(res.data))
+      localStorage['saml-mock:idp_logout'] = btoa(JSON.stringify(res.data))
       console.log(res.data.SAMLResponse)
 
-      window.location = '/post.html?type=response'
+      window.location = '/post.html?type=logout_response'
     } catch (e) {
       console.log(e)
       notificationRef.current.notify(
-        'Error generating SAML Response. See console for details.'
+        'Error generating Logout Response. See console for details.'
       )
     }
   }
@@ -153,22 +123,14 @@ export default function IdP(props) {
   return (
     <>
       <Head>
-        <title>SAML Mock IdP</title>
+        <title>SAML Mock IdP: Logout</title>
       </Head>
 
       <AppBar position="sticky" color="transparent">
         <Toolbar>
           <Typography variant="h5" className={styles.header}>
-            <Link href="/">SAML Mock</Link> IdP
+            <Link href="/">SAML Mock</Link> IdP: Logout
           </Typography>
-          <Button
-            variant="outlined"
-            color="default"
-            className={styles.button}
-            onClick={() => setInstructionsOpen(true)}
-          >
-            Instructions
-          </Button>
           <div className={styles.grow} />
           <Button
             variant="contained"
@@ -187,34 +149,22 @@ export default function IdP(props) {
           <Paper className={styles.paper}>
             <Typography variant="h6">SP Attributes</Typography>
             <Grid container>
-              <Grid item xs={6}>
+              <Grid item xs={8}>
                 <FormControl fullWidth>
-                  <InputLabel htmlFor="acsUrlInput">ACS URL</InputLabel>
+                  <InputLabel htmlFor="callbackUrlInput">
+                    Callback URL
+                  </InputLabel>
                   <Input
-                    id="acsUrlInput"
+                    id="callbackUrlInput"
                     fullWidth
                     type="text"
-                    value={acsUrl}
-                    onChange={(ev) => setAcsUrl(ev.target.value)}
-                    endAdornment={getAcsUrlAdornment()}
+                    value={callbackUrl}
+                    onChange={(ev) => setCallbackUrl(ev.target.value)}
+                    endAdornment={getCallbackUrlAdornment()}
                   />
                 </FormControl>
               </Grid>
-              <Grid item xs={3}>
-                <FormControl fullWidth>
-                  <InputLabel htmlFor="audInput">Audience</InputLabel>
-                  <Input
-                    id="audInput"
-                    fullWidth
-                    type="text"
-                    value={aud}
-                    onChange={(ev) => setAud(ev.target.value)}
-                    disabled={!sendResponse}
-                    endAdornment={getAudAdornment()}
-                  />
-                </FormControl>
-              </Grid>
-              <Grid item xs={3}>
+              <Grid item xs={4}>
                 <TextField
                   fullWidth
                   label="RelayState"
@@ -242,28 +192,11 @@ export default function IdP(props) {
         </Grid>
 
         {/* Signature */}
-        <Grid item xs={6}>
+        <Grid item xs={5}>
           <Paper className={styles.paper}>
             <Typography variant="h6">Signature</Typography>
             <NoSsr>
               <FormGroup row>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={sigOpts.signAssertion}
-                      onChange={(ev) =>
-                        setSigOpts({
-                          ...sigOpts,
-                          signAssertion: ev.target.checked,
-                        })
-                      }
-                      disabled={!sendResponse}
-                      name="signAssertion"
-                      color="primary"
-                    />
-                  }
-                  label="Sign Assertion"
-                />
                 <FormControlLabel
                   control={
                     <Checkbox
@@ -289,7 +222,7 @@ export default function IdP(props) {
                     onChange={(ev) =>
                       setSigOpts({ ...sigOpts, sigAlgo: ev.target.value })
                     }
-                    disabled={!sendResponse}
+                    disabled={!sendResponse || !sigOpts.signResponse}
                     className={styles.select}
                   >
                     <MenuItem value="rsa-sha1">RSA-SHA1</MenuItem>
@@ -304,7 +237,7 @@ export default function IdP(props) {
                     onChange={(ev) =>
                       setSigOpts({ ...sigOpts, digestAlgo: ev.target.value })
                     }
-                    disabled={!sendResponse}
+                    disabled={!sendResponse || !sigOpts.signResponse}
                     className={styles.select}
                   >
                     <MenuItem value="sha1">SHA1</MenuItem>
@@ -317,7 +250,7 @@ export default function IdP(props) {
         </Grid>
 
         {/* Options */}
-        <Grid item xs={4}>
+        <Grid item xs={5}>
           <Paper className={styles.paper}>
             <Typography variant="h6">Options</Typography>
             <NoSsr>
@@ -360,24 +293,7 @@ export default function IdP(props) {
             />
           </Paper>
         </Grid>
-
-        {/* Assertion */}
-        <Grid item xs={12}>
-          <Paper className={styles.paper}>
-            <Typography variant="h6">Assertion</Typography>
-            <XMLEditor
-              xmlStr={assertion}
-              updateXmlStr={setAssertion}
-              disabled={!sendResponse}
-            />
-          </Paper>
-        </Grid>
       </Grid>
-
-      <IdPInstructionsDialog
-        open={instructionsOpen}
-        onClose={() => setInstructionsOpen(false)}
-      />
 
       <ErrorNotification ref={notificationRef} />
     </>
@@ -389,10 +305,9 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
-      samlreq: q.SAMLRequest || null,
+      logoutreq: q.SAMLRequest || '',
       relayState: q.RelayState || '',
-      aud: q.aud || '',
-      acsUrl: q.acs_url || '',
+      callbackUrl: q.callbackUrl || '',
     },
   }
 }

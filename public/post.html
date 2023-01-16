@@ -70,6 +70,8 @@
       formPost('#request-form', 'saml-mock:sp', 'signinUrl')
     } else if (type === 'logout_request') {
       formPost('#request-form', 'saml-mock:sp_logout', 'logoutUrl')
+    } else if (type === 'logout_response') {
+      formPost('#response-form', 'saml-mock:idp_logout', 'callbackUrl')
     } else {
       setError('Invalid POST type')
     }
