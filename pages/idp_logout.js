@@ -28,6 +28,7 @@ import styles from '../styles/Home.module.css'
 import XMLEditor from '../components/XMLEditor'
 import ErrorNotification from '../components/ErrorNotification'
 import axios from 'axios'
+import { generateRedirectUrl } from '../lib/utils'
 
 export default function IdpLogout(props) {
   const [response, setResponse] = useState(logoutResponseTemplate)
@@ -39,6 +40,7 @@ export default function IdpLogout(props) {
     sigAlgo: 'rsa-sha1',
     digestAlgo: 'sha1',
   })
+  const [binding, setBinding] = useState('post')
   const [sendResponse, setSendResponse] = useState(true)
   const [sendRelayState, setSendRelayState] = useState(!!props.relayState)
 
@@ -103,15 +105,22 @@ export default function IdpLogout(props) {
           response,
           issuer,
           sigOpts,
+          binding,
           sendResponse,
           sendRelayState,
         },
       })
-      // Save the info in localStorage, so they could be used by form post script in next page
-      localStorage['saml-mock:idp_logout'] = btoa(JSON.stringify(res.data))
       console.log(res.data.SAMLResponse)
 
-      window.location = '/post.html?type=logout_response'
+      if (binding === 'redirect') {
+        window.location = generateRedirectUrl(callbackUrl, res.data)
+      } else {
+        const data = { ...res.data, callbackUrl }
+        // Save the info in localStorage, so they could be used by form post script in next page
+        localStorage['saml-mock:idp_logout'] = btoa(JSON.stringify(data))
+
+        window.location = '/post.html?type=logout_response'
+      }
     } catch (e) {
       console.log(e)
       notificationRef.current.notify(
@@ -255,6 +264,19 @@ export default function IdpLogout(props) {
             <Typography variant="h6">Options</Typography>
             <NoSsr>
               <FormGroup row>
+                <FormControl className={styles.select}>
+                  <InputLabel id="binding">Response Binding</InputLabel>
+                  <Select
+                    labelId="binding"
+                    value={binding}
+                    onChange={(ev) => setBinding(ev.target.value)}
+                    disabled={!sendResponse && !sendRelayState}
+                    className={styles.select}
+                  >
+                    <MenuItem value="post">HTTP-POST</MenuItem>
+                    <MenuItem value="redirect">HTTP-Redirect</MenuItem>
+                  </Select>
+                </FormControl>
                 <FormControlLabel
                   control={
                     <Checkbox
