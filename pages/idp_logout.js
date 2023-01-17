@@ -29,6 +29,7 @@ import XMLEditor from '../components/XMLEditor'
 import ErrorNotification from '../components/ErrorNotification'
 import axios from 'axios'
 import { generateRedirectUrl } from '../lib/utils'
+import IdPLogoutInstructionsDialog from '../components/IdPLogoutInstructionsDialog'
 
 export default function IdpLogout(props) {
   const [response, setResponse] = useState(logoutResponseTemplate)
@@ -45,6 +46,7 @@ export default function IdpLogout(props) {
   const [sendRelayState, setSendRelayState] = useState(!!props.relayState)
 
   const [prevValues, setPrevValues] = useState({})
+  const [instructionsOpen, setInstructionsOpen] = useState(false)
 
   const notificationRef = useRef()
 
@@ -140,6 +142,14 @@ export default function IdpLogout(props) {
           <Typography variant="h5" className={styles.header}>
             <Link href="/">SAML Mock</Link> IdP: Logout
           </Typography>
+          <Button
+            variant="outlined"
+            color="default"
+            className={styles.button}
+            onClick={() => setInstructionsOpen(true)}
+          >
+            Instructions
+          </Button>
           <div className={styles.grow} />
           <Button
             variant="contained"
@@ -317,6 +327,11 @@ export default function IdpLogout(props) {
         </Grid>
       </Grid>
 
+      <IdPLogoutInstructionsDialog
+        open={instructionsOpen}
+        onClose={() => setInstructionsOpen(false)}
+      />
+
       <ErrorNotification ref={notificationRef} />
     </>
   )
@@ -329,7 +344,7 @@ export async function getServerSideProps(context) {
     props: {
       logoutreq: q.SAMLRequest || '',
       relayState: q.RelayState || '',
-      callbackUrl: q.callbackUrl || '',
+      callbackUrl: q.callback_url || '',
     },
   }
 }
