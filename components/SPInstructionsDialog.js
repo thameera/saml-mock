@@ -22,11 +22,17 @@ export default function SPInstructionsDialog({ open, onClose }) {
           </span>
         </Typography>
         <Typography>
-          2. (Optional) Audience: Any value (eg:{' '}
+          2. (Optional) Sign Out URL:{' '}
+          <span className={styles.code}>
+            https://saml-mock.vercel.app/callback
+          </span>
+        </Typography>
+        <Typography>
+          3. (Optional) Audience: Any value (eg:{' '}
           <span className={styles.code}>saml-mock</span>)
         </Typography>
         <Typography>
-          3. (Optional) Certificate:{' '}
+          4. (Optional) Certificate:{' '}
           <Button href="/api/downloadCert" color="primary">
             Download certificate
           </Button>
@@ -53,6 +59,13 @@ export default function SPInstructionsDialog({ open, onClose }) {
         <Typography>
           5. Optionally, click the button to inspect the response in
           samltool.io.
+        </Typography>
+        <Typography>
+          6. Optionally, click the Log Out button to send a Logout Request to
+          the IdP.
+        </Typography>
+        <Typography>
+          You will be redirected to a screen where you can edit this request.
         </Typography>
       </DialogContent>
     </Dialog>
