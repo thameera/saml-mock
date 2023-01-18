@@ -5,6 +5,7 @@ import {
   DialogTitle,
   Typography,
 } from '@material-ui/core'
+import Link from 'next/link'
 import styles from './InstructionsDialog.module.css'
 
 export default function IdPInstructionsDialog({ open, onClose }) {
@@ -61,8 +62,16 @@ export default function IdPInstructionsDialog({ open, onClose }) {
         <Typography>3. Click Submit button on top-right.</Typography>
         <Typography>
           4. Optionally, send a logout request from the SP afterwards to
-          simulate SAML logout.
+          simulate an SP-initiated SAML logout.
         </Typography>
+        <Typography>
+          5. Optionally, if you&apos;d like to simulate an IdP-initiated SAML
+          logout, directly visit{' '}
+          <Link href="/idp_logout">
+            https://saml-mock.vercel.app/idp_logout
+          </Link>
+        </Typography>
+        <Typography>and follow the instructions there.</Typography>
 
         <div className={styles.spacer}></div>
       </DialogContent>
