@@ -353,6 +353,10 @@ export default function IdP(props) {
         <Grid item xs={12}>
           <Paper className={styles.paper}>
             <Typography variant="h6">Response</Typography>
+            <Typography variant="p" className={styles.subtitle}>
+              This SAML response will be sent to your SP when you click Submit.
+              It will be signed and encoded before it&apos;s sent.
+            </Typography>
             <XMLEditor
               xmlStr={response}
               updateXmlStr={setResponse}
@@ -365,6 +369,10 @@ export default function IdP(props) {
         <Grid item xs={12}>
           <Paper className={styles.paper}>
             <Typography variant="h6">Assertion</Typography>
+            <Typography variant="p" className={styles.subtitle}>
+              This SAML assertion will embedded in the {'{'}assertion{'}'}{' '}
+              placeholder in the above response after you click Submit.
+            </Typography>
             <XMLEditor
               xmlStr={assertion}
               updateXmlStr={setAssertion}

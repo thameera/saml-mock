@@ -91,6 +91,10 @@ export default function Callback(props) {
         <Grid item xs={12}>
           <Paper className={styles.paper}>
             <Typography variant="h6">SAML Response</Typography>
+            <Typography variant="p" className={styles.subtitle}>
+              This is the raw SAML {props.isLogoutResponse ? 'Logout' : ''}{' '}
+              response that was received from your IdP.
+            </Typography>
             <TextField
               fullWidth
               value={props.response}
@@ -119,6 +123,11 @@ export default function Callback(props) {
         <Grid item xs={12}>
           <Paper className={styles.paper}>
             <Typography variant="h6">Parsed XML</Typography>
+            <Typography variant="p" className={styles.subtitle}>
+              This is the parsed XML of the SAML{' '}
+              {props.isLogoutResponse ? 'Logout' : ''} response that was
+              received from your IdP.
+            </Typography>
             <XMLEditor xmlStr={props.xml} />
           </Paper>
         </Grid>
