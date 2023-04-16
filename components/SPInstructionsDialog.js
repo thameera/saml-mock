@@ -17,15 +17,11 @@ export default function SPInstructionsDialog({ open, onClose }) {
         </Typography>
         <Typography>
           1. ACS URL:{' '}
-          <span className={styles.code}>
-            https://saml-mock.vercel.app/callback
-          </span>
+          <span className={styles.code}>https://samlmock.dev/callback</span>
         </Typography>
         <Typography>
           2. (Optional) Sign Out URL:{' '}
-          <span className={styles.code}>
-            https://saml-mock.vercel.app/callback
-          </span>
+          <span className={styles.code}>https://samlmock.dev/callback</span>
         </Typography>
         <Typography>
           3. (Optional) Audience: Any value (eg:{' '}

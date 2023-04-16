@@ -19,7 +19,7 @@ export default function IdPInstructionsDialog({ open, onClose }) {
         <Typography>
           1. Sign-in URL:{' '}
           <span className={styles.code}>
-            https://saml-mock.vercel.app/idp?aud=
+            https://samlmock.dev/idp?aud=
             <span className={styles.highlight}>SP_AUDIENCE</span>&acs_url=
             <span className={styles.highlight}>SP_ACS_URL</span>
           </span>
@@ -27,7 +27,7 @@ export default function IdPInstructionsDialog({ open, onClose }) {
         <Typography>
           1. (Optional) Sign Out URL:{' '}
           <span className={styles.code}>
-            https://saml-mock.vercel.app/idp_logout?callback_url=
+            https://samlmock.dev/idp_logout?callback_url=
             <span className={styles.highlight}>SP_LOGOUT_CALLBACK_URL</span>
           </span>
         </Typography>
@@ -40,13 +40,13 @@ export default function IdPInstructionsDialog({ open, onClose }) {
         <Typography>
           Example sign-in URL:{' '}
           <div className={styles.code}>
-            https://saml-mock.vercel.app/idp?aud=urn:auth0:tham:mock-saml&acs_url=https://tham.auth0.com/login/callback
+            https://samlmock.dev/idp?aud=urn:auth0:tham:mock-saml&acs_url=https://tham.auth0.com/login/callback
           </div>
         </Typography>
         <Typography gutterBottom>
           Example sign out URL:{' '}
           <div className={styles.code}>
-            https://saml-mock.vercel.app/idp_logout?callback_url=https://tham.auth0.com/logout
+            https://samlmock.dev/idp_logout?callback_url=https://tham.auth0.com/logout
           </div>
         </Typography>
 
@@ -67,9 +67,7 @@ export default function IdPInstructionsDialog({ open, onClose }) {
         <Typography>
           5. Optionally, if you&apos;d like to simulate an IdP-initiated SAML
           logout, directly visit{' '}
-          <Link href="/idp_logout">
-            https://saml-mock.vercel.app/idp_logout
-          </Link>
+          <Link href="/idp_logout">https://samlmock.dev/idp_logout</Link>
         </Typography>
         <Typography>and follow the instructions there.</Typography>
 

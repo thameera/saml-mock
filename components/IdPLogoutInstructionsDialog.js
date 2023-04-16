@@ -18,7 +18,7 @@ export default function IdPLogoutInstructionsDialog({ open, onClose }) {
         <Typography>
           1. Sign Out URL:{' '}
           <span className={styles.code}>
-            https://saml-mock.vercel.app/idp_logout?callback_url=
+            https://samlmock.dev/idp_logout?callback_url=
             <span className={styles.highlight}>SP_LOGOUT_CALLBACK_URL</span>
           </span>
         </Typography>
@@ -31,7 +31,7 @@ export default function IdPLogoutInstructionsDialog({ open, onClose }) {
         <Typography gutterBottom>
           Example sign out URL:{' '}
           <div className={styles.code}>
-            https://saml-mock.vercel.app/idp_logout?callback_url=https://tham.auth0.com/logout
+            https://samlmock.dev/idp_logout?callback_url=https://tham.auth0.com/logout
           </div>
         </Typography>
 

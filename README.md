@@ -1,15 +1,15 @@
 # SAML Mock SP and IdP
 
-Live version at: https://saml-mock.vercel.app
+Live version at: https://samlmock.dev
 
 ## Using the mock IdP
 
 ### SP Configuration
 
-- Certificate: Can be downloaded from the top-left button at https://saml-mock.vercel.app/idp
-- Sign-in URL: Set this to `https://saml-mock.vercel.app/idp?aud=SP_AUDIENCE&acs_url=SP_ACS_URL`. Replace `SP_AUDIENCE` and `SP_ACS_URL` correctly.
+- Certificate: Can be downloaded from the top-left button at https://samlmock.dev/idp
+- Sign-in URL: Set this to `https://samlmock.dev/idp?aud=SP_AUDIENCE&acs_url=SP_ACS_URL`. Replace `SP_AUDIENCE` and `SP_ACS_URL` correctly.
 
-Example: https://saml-mock.vercel.app/idp?aud=urn:auth0:tham:mock-saml&acs_url=https://tham.auth0.com/login/callback
+Example: https://samlmock.dev/idp?aud=urn:auth0:tham:mock-saml&acs_url=https://tham.auth0.com/login/callback
 
 ### Doing a SAML flow
 
