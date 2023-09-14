@@ -5,8 +5,6 @@ import {
 import { ThemeProvider } from '@material-ui/styles'
 import Head from 'next/head'
 
-import 'codemirror/lib/codemirror.css'
-import 'codemirror/theme/xq-light.css'
 import '../styles/globals.css'
 
 // Using this (instead of createTheme) to get rid of React strict mode warnings
