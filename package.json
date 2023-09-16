@@ -20,6 +20,7 @@
     "@mui/material": "^5.14.9",
     "@uiw/codemirror-themes": "^4.21.13",
     "@uiw/react-codemirror": "^4.21.13",
+    "@xmldom/xmldom": "^0.8.10",
     "axios": "^0.21.1",
     "luxon": "^1.28.0",
     "next": "^13.4.19",
@@ -31,7 +32,6 @@
     "uuid": "^8.3.2",
     "xml-crypto": "^2.1.2",
     "xml-formatter": "^2.4.0",
-    "xmldom": "^0.6.0",
     "xpath": "0.0.32"
   },
   "devDependencies": {

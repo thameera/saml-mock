@@ -15,7 +15,7 @@ import parse from 'urlencoded-body-parser'
 import XMLEditor from '../components/XMLEditor'
 import styles from '../styles/Home.module.css'
 import ErrorNotification from '../components/ErrorNotification'
-import xmldom from 'xmldom'
+import xmldom from '@xmldom/xmldom'
 
 export default function Callback(props) {
   const notificationRef = useRef()
