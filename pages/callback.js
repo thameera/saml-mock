@@ -9,7 +9,7 @@ import {
   TextField,
   Toolbar,
   Typography,
-} from '@material-ui/core'
+} from '@mui/material'
 import xmlFormat from 'xml-formatter'
 import parse from 'urlencoded-body-parser'
 import XMLEditor from '../components/XMLEditor'
@@ -96,6 +96,7 @@ export default function Callback(props) {
               response that was received from your IdP.
             </Typography>
             <TextField
+              variant="standard"
               fullWidth
               value={props.response}
               multiline
@@ -109,6 +110,7 @@ export default function Callback(props) {
             <Typography variant="h6">RelayState</Typography>
             {props.relayState ? (
               <TextField
+                variant="standard"
                 fullWidth
                 value={props.relayState}
                 multiline

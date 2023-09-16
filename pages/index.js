@@ -6,7 +6,7 @@ import {
   Grid,
   Toolbar,
   Typography,
-} from '@material-ui/core'
+} from '@mui/material'
 import Head from 'next/head'
 import Link from 'next/link'
 import styles from '../styles/Home.module.css'

@@ -18,7 +18,7 @@ import {
   Toolbar,
   Tooltip,
   Typography,
-} from '@material-ui/core'
+} from '@mui/material'
 import axios from 'axios'
 import { requestTemplate } from '../lib/templates'
 import styles from '../styles/Home.module.css'
@@ -112,7 +112,6 @@ export default function SP() {
           </Typography>
           <Button
             variant="outlined"
-            color="default"
             className={styles.button}
             onClick={() => setInstructionsOpen(true)}
           >
@@ -135,6 +134,7 @@ export default function SP() {
         <Grid item xs={8}>
           <Paper className={styles.paper}>
             <TextField
+              variant="standard"
               fullWidth
               label="Sign-in URL"
               value={signinUrl}
@@ -146,6 +146,7 @@ export default function SP() {
         <Grid item xs={4}>
           <Paper className={styles.paper}>
             <TextField
+              variant="standard"
               fullWidth
               disabled={!sendRelayState}
               label="RelayState"
@@ -180,9 +181,14 @@ export default function SP() {
                   label="Sign Request"
                 />
                 {/* Signature Algo */}
-                <FormControl className={styles.select} disabled={!sendRequest}>
+                <FormControl
+                  variant="standard"
+                  className={styles.select}
+                  disabled={!sendRequest}
+                >
                   <InputLabel id="sig-algo">Signature Algorithm</InputLabel>
                   <Select
+                    variant="standard"
                     labelId="sig-algo"
                     value={sigOpts.sigAlgo}
                     onChange={(ev) =>
@@ -204,11 +210,13 @@ export default function SP() {
                   placement="top"
                 >
                   <FormControl
+                    variant="standard"
                     className={styles.select}
                     disabled={binding === 'redirect'}
                   >
                     <InputLabel id="digest-algo">Digest Algorithm</InputLabel>
                     <Select
+                      variant="standard"
                       labelId="digest-algo"
                       value={sigOpts.digestAlgo}
                       onChange={(ev) =>
@@ -232,9 +240,10 @@ export default function SP() {
             <Typography variant="h6">Options</Typography>
             <NoSsr>
               {/* Binding */}
-              <FormControl className={styles.select}>
+              <FormControl variant="standard" className={styles.select}>
                 <InputLabel id="binding">Request Binding</InputLabel>
                 <Select
+                  variant="standard"
                   labelId="binding"
                   value={binding}
                   onChange={(ev) => setBinding(ev.target.value)}

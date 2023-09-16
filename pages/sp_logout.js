@@ -18,7 +18,7 @@ import {
   Toolbar,
   Tooltip,
   Typography,
-} from '@material-ui/core'
+} from '@mui/material'
 import axios from 'axios'
 import styles from '../styles/Home.module.css'
 import { logoutRequestTemplate } from '../lib/templates'
@@ -125,19 +125,13 @@ export default function SPLogout(props) {
           </Typography>
           <Button
             variant="outlined"
-            color="default"
             className={styles.button}
             onClick={() => setInstructionsOpen(true)}
           >
             Instructions
           </Button>
           <div className={styles.grow} />
-          <Button
-            variant="contained"
-            color="default"
-            className={styles.button}
-            href="/sp"
-          >
+          <Button variant="contained" className={styles.button} href="/sp">
             Back to SP
           </Button>
           <Button
@@ -156,6 +150,7 @@ export default function SPLogout(props) {
         <Grid item xs={8}>
           <Paper className={styles.paper}>
             <TextField
+              variant="standard"
               fullWidth
               label="IdP Logout URL"
               value={logoutUrl}
@@ -167,6 +162,7 @@ export default function SPLogout(props) {
         <Grid item xs={4}>
           <Paper className={styles.paper}>
             <TextField
+              variant="standard"
               fullWidth
               disabled={!sendRelayState}
               label="RelayState (optional)"
@@ -200,9 +196,10 @@ export default function SPLogout(props) {
                   label="Sign Request"
                 />
                 {/* Signature Algo */}
-                <FormControl className={styles.select}>
+                <FormControl variant="standard" className={styles.select}>
                   <InputLabel id="sig-algo">Signature Algorithm</InputLabel>
                   <Select
+                    variant="standard"
                     labelId="sig-algo"
                     value={sigOpts.sigAlgo}
                     onChange={(ev) =>
@@ -224,11 +221,13 @@ export default function SPLogout(props) {
                   placement="top"
                 >
                   <FormControl
+                    variant="standard"
                     className={styles.select}
                     disabled={binding === 'redirect'}
                   >
                     <InputLabel id="digest-algo">Digest Algorithm</InputLabel>
                     <Select
+                      variant="standard"
                       labelId="digest-algo"
                       value={sigOpts.digestAlgo}
                       onChange={(ev) =>
@@ -252,9 +251,10 @@ export default function SPLogout(props) {
             <Typography variant="h6">Options</Typography>
             <NoSsr>
               {/* Binding */}
-              <FormControl className={styles.select}>
+              <FormControl variant="standard" className={styles.select}>
                 <InputLabel id="binding">Request Binding</InputLabel>
                 <Select
+                  variant="standard"
                   labelId="binding"
                   value={binding}
                   onChange={(ev) => setBinding(ev.target.value)}

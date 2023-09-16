@@ -21,8 +21,8 @@ import {
   Toolbar,
   Tooltip,
   Typography,
-} from '@material-ui/core'
-import CachedIcon from '@material-ui/icons/Cached'
+} from '@mui/material'
+import CachedIcon from '@mui/icons-material/Cached'
 import axios from 'axios'
 import XMLEditor from '../components/XMLEditor'
 import { assertionTemplate, responseTemplate } from '../lib/templates'
@@ -88,7 +88,7 @@ export default function IdP(props) {
     return (
       <InputAdornment position="end">
         <Tooltip title="Set previous ACS URL">
-          <IconButton onClick={() => setAcsUrl(prevValues.acsUrl)}>
+          <IconButton onClick={() => setAcsUrl(prevValues.acsUrl)} size="large">
             <CachedIcon />
           </IconButton>
         </Tooltip>
@@ -106,7 +106,7 @@ export default function IdP(props) {
     return (
       <InputAdornment position="end">
         <Tooltip title="Set previous Audience">
-          <IconButton onClick={() => setAud(prevValues.aud)}>
+          <IconButton onClick={() => setAud(prevValues.aud)} size="large">
             <CachedIcon />
           </IconButton>
         </Tooltip>
@@ -163,7 +163,6 @@ export default function IdP(props) {
           </Typography>
           <Button
             variant="outlined"
-            color="default"
             className={styles.button}
             onClick={() => setInstructionsOpen(true)}
           >
@@ -188,7 +187,7 @@ export default function IdP(props) {
             <Typography variant="h6">SP Attributes</Typography>
             <Grid container>
               <Grid item xs={6}>
-                <FormControl fullWidth>
+                <FormControl variant="standard" fullWidth>
                   <InputLabel htmlFor="acsUrlInput">ACS URL</InputLabel>
                   <Input
                     id="acsUrlInput"
@@ -201,7 +200,7 @@ export default function IdP(props) {
                 </FormControl>
               </Grid>
               <Grid item xs={3}>
-                <FormControl fullWidth>
+                <FormControl variant="standard" fullWidth>
                   <InputLabel htmlFor="audInput">Audience</InputLabel>
                   <Input
                     id="audInput"
@@ -216,6 +215,7 @@ export default function IdP(props) {
               </Grid>
               <Grid item xs={3}>
                 <TextField
+                  variant="standard"
                   fullWidth
                   label="RelayState"
                   value={relayState}
@@ -232,6 +232,7 @@ export default function IdP(props) {
           <Paper className={styles.paper}>
             <Typography variant="h6">IdP Attributes</Typography>
             <TextField
+              variant="standard"
               fullWidth
               label="Issuer"
               value={issuer}
@@ -281,9 +282,10 @@ export default function IdP(props) {
                   }
                   label="Sign Response"
                 />
-                <FormControl className={styles.select}>
+                <FormControl variant="standard" className={styles.select}>
                   <InputLabel id="sig-algo">Signature Algorithm</InputLabel>
                   <Select
+                    variant="standard"
                     labelId="sig-algo"
                     value={sigOpts.sigAlgo}
                     onChange={(ev) =>
@@ -296,9 +298,10 @@ export default function IdP(props) {
                     <MenuItem value="rsa-sha256">RSA-SHA256</MenuItem>
                   </Select>
                 </FormControl>
-                <FormControl className={styles.select}>
+                <FormControl variant="standard" className={styles.select}>
                   <InputLabel id="digest-algo">Digest Algorithm</InputLabel>
                   <Select
+                    variant="standard"
                     labelId="digest-algo"
                     value={sigOpts.digestAlgo}
                     onChange={(ev) =>

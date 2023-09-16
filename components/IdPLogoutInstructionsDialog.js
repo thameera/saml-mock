@@ -4,7 +4,7 @@ import {
   DialogContent,
   DialogTitle,
   Typography,
-} from '@material-ui/core'
+} from '@mui/material'
 import styles from './InstructionsDialog.module.css'
 
 export default function IdPLogoutInstructionsDialog({ open, onClose }) {

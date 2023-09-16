@@ -19,8 +19,8 @@ import {
   Toolbar,
   Tooltip,
   Typography,
-} from '@material-ui/core'
-import CachedIcon from '@material-ui/icons/Cached'
+} from '@mui/material'
+import CachedIcon from '@mui/icons-material/Cached'
 import Head from 'next/head'
 import Link from 'next/link'
 import { logoutResponseTemplate } from '../lib/templates'
@@ -83,7 +83,10 @@ export default function IdpLogout(props) {
     return (
       <InputAdornment position="end">
         <Tooltip title="Set previous Callback URL">
-          <IconButton onClick={() => setCallbackUrl(prevValues.callbackUrl)}>
+          <IconButton
+            onClick={() => setCallbackUrl(prevValues.callbackUrl)}
+            size="large"
+          >
             <CachedIcon />
           </IconButton>
         </Tooltip>
@@ -144,7 +147,6 @@ export default function IdpLogout(props) {
           </Typography>
           <Button
             variant="outlined"
-            color="default"
             className={styles.button}
             onClick={() => setInstructionsOpen(true)}
           >
@@ -169,7 +171,7 @@ export default function IdpLogout(props) {
             <Typography variant="h6">SP Attributes</Typography>
             <Grid container>
               <Grid item xs={8}>
-                <FormControl fullWidth>
+                <FormControl variant="standard" fullWidth>
                   <InputLabel htmlFor="callbackUrlInput">
                     Callback URL
                   </InputLabel>
@@ -185,6 +187,7 @@ export default function IdpLogout(props) {
               </Grid>
               <Grid item xs={4}>
                 <TextField
+                  variant="standard"
                   fullWidth
                   label="RelayState"
                   value={relayState}
@@ -201,6 +204,7 @@ export default function IdpLogout(props) {
           <Paper className={styles.paper}>
             <Typography variant="h6">IdP Attributes</Typography>
             <TextField
+              variant="standard"
               fullWidth
               label="Issuer"
               value={issuer}
@@ -233,9 +237,10 @@ export default function IdpLogout(props) {
                   }
                   label="Sign Response"
                 />
-                <FormControl className={styles.select}>
+                <FormControl variant="standard" className={styles.select}>
                   <InputLabel id="sig-algo">Signature Algorithm</InputLabel>
                   <Select
+                    variant="standard"
                     labelId="sig-algo"
                     value={sigOpts.sigAlgo}
                     onChange={(ev) =>
@@ -248,9 +253,10 @@ export default function IdpLogout(props) {
                     <MenuItem value="rsa-sha256">RSA-SHA256</MenuItem>
                   </Select>
                 </FormControl>
-                <FormControl className={styles.select}>
+                <FormControl variant="standard" className={styles.select}>
                   <InputLabel id="digest-algo">Digest Algorithm</InputLabel>
                   <Select
+                    variant="standard"
                     labelId="digest-algo"
                     value={sigOpts.digestAlgo}
                     onChange={(ev) =>
@@ -274,9 +280,10 @@ export default function IdpLogout(props) {
             <Typography variant="h6">Options</Typography>
             <NoSsr>
               <FormGroup row>
-                <FormControl className={styles.select}>
+                <FormControl variant="standard" className={styles.select}>
                   <InputLabel id="binding">Response Binding</InputLabel>
                   <Select
+                    variant="standard"
                     labelId="binding"
                     value={binding}
                     onChange={(ev) => setBinding(ev.target.value)}

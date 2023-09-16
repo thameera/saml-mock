@@ -4,7 +4,7 @@ import {
   DialogContent,
   DialogTitle,
   Typography,
-} from '@material-ui/core'
+} from '@mui/material'
 import Link from 'next/link'
 import styles from './InstructionsDialog.module.css'
 
