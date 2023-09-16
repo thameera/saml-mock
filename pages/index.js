@@ -29,7 +29,7 @@ export default function Home() {
       <Container maxWidth="sm" className={styles.buttonContainer}>
         <Grid container direction="row" spacing={2}>
           <Grid item xs={6}>
-            <Link href="/idp">
+            <Link href="/idp" className={styles.link}>
               <Card variant="outlined" className={styles.cardLink}>
                 <CardContent>
                   <Typography gutterBottom variant="h5">
@@ -41,7 +41,7 @@ export default function Home() {
             </Link>
           </Grid>
           <Grid item xs={6}>
-            <Link href="/sp">
+            <Link href="/sp" className={styles.link}>
               <Card variant="outlined" className={styles.cardLink}>
                 <CardContent>
                   <Typography gutterBottom variant="h5">
