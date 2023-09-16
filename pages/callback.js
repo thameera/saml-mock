@@ -56,7 +56,7 @@ export default function Callback(props) {
           <div className={styles.grow} />
           <Button
             variant="contained"
-            color={props.isLogoutResponse ? 'primary' : 'default'}
+            color={props.isLogoutResponse ? 'primary' : 'inherit'}
             className={styles.button}
             href="/sp"
           >
