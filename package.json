@@ -24,6 +24,7 @@
     "axios": "^0.21.1",
     "luxon": "^1.28.0",
     "next": "^13.4.19",
+    "nextjs-progressbar": "^0.0.16",
     "querystring": "^0.2.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
