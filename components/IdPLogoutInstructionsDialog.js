@@ -10,7 +10,7 @@ import styles from './InstructionsDialog.module.css'
 export default function IdPLogoutInstructionsDialog({ open, onClose }) {
   return (
     <Dialog open={open} onClose={onClose} maxWidth="lg">
-      <DialogTitle>IdP Logout Instructions</DialogTitle>
+      <DialogTitle>How to set up IdP Logout</DialogTitle>
       <DialogContent>
         <Typography variant="h6">Video walkthrough:</Typography>
         <Typography>
@@ -18,13 +18,21 @@ export default function IdPLogoutInstructionsDialog({ open, onClose }) {
           roughly similar for other SPs.
         </Typography>
         <Typography>
-          <a href="https://www.youtube.com/watch?v=GJ8Ux0BfLfw" target="_blank" rel="noreferrer">
+          <a
+            href="https://www.youtube.com/watch?v=GJ8Ux0BfLfw"
+            target="_blank"
+            rel="noreferrer"
+          >
             https://www.youtube.com/watch?v=GJ8Ux0BfLfw
           </a>
         </Typography>
         <div className={styles.spacer}></div>
         <Typography variant="h6" gutterBottom>
           SP Configuration
+        </Typography>
+        <Typography>
+          Before performing a logout, the SP should be configured so it knows
+          how to initiate a logout with SAML Mock.
         </Typography>
         <Typography>
           1. Sign Out URL:{' '}

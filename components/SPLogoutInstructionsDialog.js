@@ -10,7 +10,7 @@ import styles from './InstructionsDialog.module.css'
 export default function SPLogoutInstructionsDialog({ open, onClose }) {
   return (
     <Dialog open={open} onClose={onClose} maxWidth="lg">
-      <DialogTitle>SP Logout Instructions</DialogTitle>
+      <DialogTitle>How to set up SP Logout</DialogTitle>
       <DialogContent>
         <Typography variant="h6">Video walkthrough:</Typography>
         <Typography>
@@ -18,13 +18,21 @@ export default function SPLogoutInstructionsDialog({ open, onClose }) {
           roughly similar for other IdPs.
         </Typography>
         <Typography>
-          <a href="https://www.youtube.com/watch?v=ZqvFG-CcIrA" target="_blank" rel="noreferrer">
+          <a
+            href="https://www.youtube.com/watch?v=ZqvFG-CcIrA"
+            target="_blank"
+            rel="noreferrer"
+          >
             https://www.youtube.com/watch?v=ZqvFG-CcIrA
           </a>
         </Typography>
         <div className={styles.spacer}></div>
         <Typography variant="h6" gutterBottom>
           IdP Configuration
+        </Typography>
+        <Typography>
+          Before performing a logout, the IdP should be configured so it knows
+          where to redirect back after logout.
         </Typography>
         <Typography>
           1. SAML Logout callback URL:{' '}

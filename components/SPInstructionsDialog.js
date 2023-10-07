@@ -10,7 +10,7 @@ import styles from './InstructionsDialog.module.css'
 export default function SPInstructionsDialog({ open, onClose }) {
   return (
     <Dialog open={open} onClose={onClose} maxWidth="lg">
-      <DialogTitle>SP Instructions</DialogTitle>
+      <DialogTitle>How to use SAML Mock SP</DialogTitle>
       <DialogContent>
         <Typography variant="h6">Video walkthrough:</Typography>
         <Typography>
@@ -18,13 +18,21 @@ export default function SPInstructionsDialog({ open, onClose }) {
           roughly similar for other IdPs.
         </Typography>
         <Typography>
-          <a href="https://www.youtube.com/watch?v=ZqvFG-CcIrA" target="_blank" rel="noreferrer">
+          <a
+            href="https://www.youtube.com/watch?v=ZqvFG-CcIrA"
+            target="_blank"
+            rel="noreferrer"
+          >
             https://www.youtube.com/watch?v=ZqvFG-CcIrA
           </a>
         </Typography>
         <div className={styles.spacer}></div>
         <Typography variant="h6" gutterBottom>
           IdP Configuration
+        </Typography>
+        <Typography gutterBottom>
+          As you might expect, we need to configure the SAML SP at the
+          beginning, especially let it know the ACS URL of SAML Mock.
         </Typography>
         <Typography>
           1. ACS URL:{' '}

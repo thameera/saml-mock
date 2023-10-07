@@ -11,7 +11,7 @@ import styles from './InstructionsDialog.module.css'
 export default function IdPInstructionsDialog({ open, onClose }) {
   return (
     <Dialog open={open} onClose={onClose} maxWidth="lg">
-      <DialogTitle>IdP Instructions</DialogTitle>
+      <DialogTitle>How to use SAML Mock IdP</DialogTitle>
       <DialogContent>
         <Typography variant="h6">Video walkthrough:</Typography>
         <Typography>
@@ -19,13 +19,26 @@ export default function IdPInstructionsDialog({ open, onClose }) {
           roughly similar for other SPs.
         </Typography>
         <Typography>
-          <a href="https://www.youtube.com/watch?v=GJ8Ux0BfLfw" target="_blank" rel="noreferrer">
+          <a
+            href="https://www.youtube.com/watch?v=GJ8Ux0BfLfw"
+            target="_blank"
+            rel="noreferrer"
+          >
             https://www.youtube.com/watch?v=GJ8Ux0BfLfw
           </a>
         </Typography>
         <div className={styles.spacer}></div>
         <Typography variant="h6" gutterBottom>
           SP Configuration
+        </Typography>
+        <Typography>
+          Like in a regular SAML setup, we need to configure the SP first, so it
+          knows SAML Mock IdP&#39;s details like the sign-in URL and X.509
+          certificate.
+        </Typography>
+        <Typography gutterBottom>
+          Note that we also embed some details about SP in the sign-in URL, so
+          SAML Mock can know about it despite being stateless.
         </Typography>
         <Typography>
           1. Sign-in URL:{' '}
