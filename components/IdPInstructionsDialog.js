@@ -13,7 +13,18 @@ export default function IdPInstructionsDialog({ open, onClose }) {
     <Dialog open={open} onClose={onClose} maxWidth="lg">
       <DialogTitle>IdP Instructions</DialogTitle>
       <DialogContent>
-        <Typography variant="h4" gutterBottom>
+        <Typography variant="h6">Video walkthrough:</Typography>
+        <Typography>
+          This video uses Auth0 as the Service Provider. The setup would be
+          roughly similar for other SPs.
+        </Typography>
+        <Typography>
+          <a href="https://www.youtube.com/watch?v=GJ8Ux0BfLfw" target="_blank" rel="noreferrer">
+            https://www.youtube.com/watch?v=GJ8Ux0BfLfw
+          </a>
+        </Typography>
+        <div className={styles.spacer}></div>
+        <Typography variant="h6" gutterBottom>
           SP Configuration
         </Typography>
         <Typography>
@@ -51,7 +62,7 @@ export default function IdPInstructionsDialog({ open, onClose }) {
         </Typography>
 
         <div className={styles.spacer}></div>
-        <Typography variant="h4" gutterBottom>
+        <Typography variant="h6" gutterBottom>
           Doing a SAML flow
         </Typography>
         <Typography>1. Initiate a login from the SP.</Typography>

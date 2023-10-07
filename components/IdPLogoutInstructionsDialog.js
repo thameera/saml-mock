@@ -12,7 +12,18 @@ export default function IdPLogoutInstructionsDialog({ open, onClose }) {
     <Dialog open={open} onClose={onClose} maxWidth="lg">
       <DialogTitle>IdP Logout Instructions</DialogTitle>
       <DialogContent>
-        <Typography variant="h4" gutterBottom>
+        <Typography variant="h6">Video walkthrough:</Typography>
+        <Typography>
+          This video uses Auth0 as the Service Provider. The setup would be
+          roughly similar for other SPs.
+        </Typography>
+        <Typography>
+          <a href="https://www.youtube.com/watch?v=GJ8Ux0BfLfw" target="_blank" rel="noreferrer">
+            https://www.youtube.com/watch?v=GJ8Ux0BfLfw
+          </a>
+        </Typography>
+        <div className={styles.spacer}></div>
+        <Typography variant="h6" gutterBottom>
           SP Configuration
         </Typography>
         <Typography>
@@ -36,7 +47,7 @@ export default function IdPLogoutInstructionsDialog({ open, onClose }) {
         </Typography>
 
         <div className={styles.spacer}></div>
-        <Typography variant="h4" gutterBottom>
+        <Typography variant="h6" gutterBottom>
           Doing an SP-initiated SAML Logout flow
         </Typography>
         <Typography>1. Initiate a logout from the SP.</Typography>
@@ -47,7 +58,7 @@ export default function IdPLogoutInstructionsDialog({ open, onClose }) {
         <Typography>3. Click Submit button on top-right.</Typography>
 
         <div className={styles.spacer}></div>
-        <Typography variant="h4" gutterBottom>
+        <Typography variant="h6" gutterBottom>
           Doing an IdP-initiated SAML Logout flow
         </Typography>
         <Typography>

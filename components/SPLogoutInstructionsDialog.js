@@ -12,7 +12,18 @@ export default function SPLogoutInstructionsDialog({ open, onClose }) {
     <Dialog open={open} onClose={onClose} maxWidth="lg">
       <DialogTitle>SP Logout Instructions</DialogTitle>
       <DialogContent>
-        <Typography variant="h4" gutterBottom>
+        <Typography variant="h6">Video walkthrough:</Typography>
+        <Typography>
+          This video uses Auth0 as the Identity Provider. The setup would be
+          roughly similar for other IdPs.
+        </Typography>
+        <Typography>
+          <a href="https://www.youtube.com/watch?v=ZqvFG-CcIrA" target="_blank" rel="noreferrer">
+            https://www.youtube.com/watch?v=ZqvFG-CcIrA
+          </a>
+        </Typography>
+        <div className={styles.spacer}></div>
+        <Typography variant="h6" gutterBottom>
           IdP Configuration
         </Typography>
         <Typography>
@@ -31,7 +42,7 @@ export default function SPLogoutInstructionsDialog({ open, onClose }) {
         </Typography>
 
         <div className={styles.spacer}></div>
-        <Typography variant="h4" gutterBottom>
+        <Typography variant="h6" gutterBottom>
           Doing an SP-initiated SAML Logout flow
         </Typography>
         <Typography>
