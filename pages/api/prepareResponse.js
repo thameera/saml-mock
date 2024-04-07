@@ -32,7 +32,8 @@ export default function handler(req, res) {
   const expiryTime = now.plus({ days: 1 }).toUTC().toISO()
 
   const mappings = {
-    id: generateId(),
+    respId: generateId(),
+    assertId: generateId(),
     issueTime,
     expiryTime,
     issuer: body.issuer,
