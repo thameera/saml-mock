@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
 import {
+  Alert,
   AppBar,
   Button,
   Checkbox,
@@ -130,6 +131,15 @@ export default function SP() {
       </AppBar>
 
       <Grid container>
+        <Grid item xs={12}>
+          <Alert severity="warning">
+            IMPORTANT: SAML Mock&#39;s X509 certificate was updated on
+            2024-06-08. If you have uploaded it to the IdP and haven&#39;t
+            updated it since, please{' '}
+            <a href="/api/downloadCert">download the new certificate</a> to
+            avoid &#34;Thumbprint mismatch&#34; errors.
+          </Alert>
+        </Grid>
         {/* Sign-in URL */}
         <Grid item xs={8}>
           <Paper className={styles.paper}>
