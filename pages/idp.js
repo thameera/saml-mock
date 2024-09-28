@@ -30,6 +30,7 @@ import { assertionTemplate, responseTemplate } from '../lib/templates'
 import styles from '../styles/Home.module.css'
 import IdPInstructionsDialog from '../components/IdPInstructionsDialog'
 import ErrorNotification from '../components/ErrorNotification'
+import parse from 'urlencoded-body-parser'
 
 export default function IdP(props) {
   const [assertion, setAssertion] = useState(assertionTemplate)
@@ -404,11 +405,12 @@ export default function IdP(props) {
 
 export async function getServerSideProps(context) {
   const q = context.query
+  const b = context.req.method === 'POST' ? await parse(context.req) : {}
 
   return {
     props: {
-      samlreq: q.SAMLRequest || null,
-      relayState: q.RelayState || '',
+      samlreq: b.SAMLRequest || q.SAMLRequest || null,
+      relayState: b.RelayState || q.RelayState || '',
       aud: q.aud || '',
       acsUrl: q.acs_url || '',
     },
