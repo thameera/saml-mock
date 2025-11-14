@@ -43,6 +43,7 @@ export default function IdP(props) {
     signResponse: false,
     sigAlgo: 'rsa-sha1',
     digestAlgo: 'sha1',
+    embedKeyInfo: true,
   })
   const [sendResponse, setSendResponse] = useState(true)
   const [sendRelayState, setSendRelayState] = useState(true)
@@ -282,6 +283,23 @@ export default function IdP(props) {
                     />
                   }
                   label="Sign Response"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={sigOpts.embedKeyInfo}
+                      onChange={(ev) =>
+                        setSigOpts({
+                          ...sigOpts,
+                          embedKeyInfo: ev.target.checked,
+                        })
+                      }
+                      disabled={!sendResponse}
+                      name="embedKeyInfo"
+                      color="primary"
+                    />
+                  }
+                  label="Embed KeyInfo"
                 />
                 <FormControl variant="standard" className={styles.select}>
                   <InputLabel id="sig-algo">Signature Algorithm</InputLabel>
