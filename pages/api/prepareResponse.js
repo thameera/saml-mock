@@ -3,6 +3,7 @@ import { DateTime } from 'luxon'
 import { parseSamlRequest } from '../../lib/requestParser'
 import { canonicalize, generateId } from '../../lib/utils'
 import { signAssertion, signResponse } from '../../lib/signer'
+import { encryptAssertion } from '../../lib/encrypter'
 
 export default function handler(req, res) {
   if (req.method !== 'POST') {
@@ -46,7 +47,8 @@ export default function handler(req, res) {
   // Prepare assertion
   const assertion = format(body.assertion, mappings)
   const canonicalizedAssertion = canonicalize(assertion)
-  mappings.assertion = signAssertion(canonicalizedAssertion, body.sigOpts)
+  const signedAssertion = signAssertion(canonicalizedAssertion, body.sigOpts)
+  mappings.assertion = encryptAssertion(signedAssertion, body.encOpts)
 
   // Prepare response
   const response = format(body.response, mappings)

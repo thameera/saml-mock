@@ -33,6 +33,12 @@
   margin-right: 15px !important;
 }
 
+/* For selects whose label or options don't fit in 150px. */
+.selectWide {
+  width: 260px !important;
+  margin-right: 15px !important;
+}
+
 .header {
   color: #444;
 }
