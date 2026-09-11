@@ -132,6 +132,15 @@ export default function IdP(props) {
       return
     }
 
+    if (
+      sendResponse &&
+      encOpts.encryptAssertion &&
+      !encOpts.encryptionCert.trim()
+    ) {
+      notificationRef.current.notify('Encryption Certificate cannot be empty')
+      return
+    }
+
     try {
       const res = await axios({
         method: 'POST',
@@ -517,6 +526,7 @@ export default function IdP(props) {
                   setEncOpts({ ...encOpts, encryptionCert: ev.target.value })
                 }
                 disabled={!sendResponse || !encOpts.encryptAssertion}
+                required={sendResponse && encOpts.encryptAssertion}
               />
             </NoSsr>
           </Paper>
