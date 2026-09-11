@@ -45,6 +45,16 @@ export default function IdP(props) {
     digestAlgo: 'sha1',
     embedKeyInfo: true,
   })
+  const [encOpts, setEncOpts] = useState({
+    encryptAssertion: !!props.encryptionCert,
+    dataEncryptionAlgo: 'aes256-gcm',
+    keyEncryptionAlgo: 'rsa-oaep-mgf1p',
+    oaepDigestAlgo: 'sha1',
+    mgf1DigestAlgo: 'sha1',
+    oaepParams: '',
+    forceMgf1Mismatch: false,
+    encryptionCert: props.encryptionCert || '',
+  })
   const [sendResponse, setSendResponse] = useState(true)
   const [sendRelayState, setSendRelayState] = useState(true)
 
@@ -135,6 +145,7 @@ export default function IdP(props) {
           acsUrl,
           issuer,
           sigOpts,
+          encOpts,
           sendResponse,
           sendRelayState,
         },
@@ -338,6 +349,179 @@ export default function IdP(props) {
           </Paper>
         </Grid>
 
+        {/* Encryption */}
+        <Grid item xs={12}>
+          <Paper className={styles.paper}>
+            <Typography variant="h6">Encryption</Typography>
+            <NoSsr>
+              <FormGroup row>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={encOpts.encryptAssertion}
+                      onChange={(ev) =>
+                        setEncOpts({
+                          ...encOpts,
+                          encryptAssertion: ev.target.checked,
+                        })
+                      }
+                      disabled={!sendResponse}
+                      name="encryptAssertion"
+                      color="primary"
+                    />
+                  }
+                  label="Encrypt Assertion"
+                />
+                <FormControl variant="standard" className={styles.selectWide}>
+                  <InputLabel id="data-enc-algo">
+                    Data Encryption Algorithm
+                  </InputLabel>
+                  <Select
+                    variant="standard"
+                    labelId="data-enc-algo"
+                    value={encOpts.dataEncryptionAlgo}
+                    onChange={(ev) =>
+                      setEncOpts({
+                        ...encOpts,
+                        dataEncryptionAlgo: ev.target.value,
+                      })
+                    }
+                    disabled={!sendResponse || !encOpts.encryptAssertion}
+                    className={styles.selectWide}
+                  >
+                    <MenuItem value="aes128-cbc">
+                      AES-128-CBC (no integrity)
+                    </MenuItem>
+                    <MenuItem value="aes256-cbc">
+                      AES-256-CBC (no integrity)
+                    </MenuItem>
+                    <MenuItem value="aes128-gcm">
+                      AES-128-GCM (recommended)
+                    </MenuItem>
+                    <MenuItem value="aes256-gcm">
+                      AES-256-GCM (recommended)
+                    </MenuItem>
+                  </Select>
+                </FormControl>
+                <FormControl variant="standard" className={styles.selectWide}>
+                  <InputLabel id="key-enc-algo">
+                    Key Encryption Algorithm
+                  </InputLabel>
+                  <Select
+                    variant="standard"
+                    labelId="key-enc-algo"
+                    value={encOpts.keyEncryptionAlgo}
+                    onChange={(ev) =>
+                      setEncOpts({
+                        ...encOpts,
+                        keyEncryptionAlgo: ev.target.value,
+                      })
+                    }
+                    disabled={!sendResponse || !encOpts.encryptAssertion}
+                    className={styles.selectWide}
+                  >
+                    <MenuItem value="rsa-1_5">RSA 1.5</MenuItem>
+                    <MenuItem value="rsa-oaep-mgf1p">RSA-OAEP-MGF1P</MenuItem>
+                    <MenuItem value="rsa-oaep">RSA-OAEP</MenuItem>
+                  </Select>
+                </FormControl>
+                {encOpts.keyEncryptionAlgo !== 'rsa-1_5' && (
+                  <FormControl variant="standard" className={styles.select}>
+                    <InputLabel id="oaep-digest-algo">
+                      Digest Method Algorithm
+                    </InputLabel>
+                    <Select
+                      variant="standard"
+                      labelId="oaep-digest-algo"
+                      value={encOpts.oaepDigestAlgo}
+                      onChange={(ev) =>
+                        setEncOpts({
+                          ...encOpts,
+                          oaepDigestAlgo: ev.target.value,
+                        })
+                      }
+                      disabled={!sendResponse || !encOpts.encryptAssertion}
+                      className={styles.select}
+                    >
+                      <MenuItem value="sha1">SHA1</MenuItem>
+                      <MenuItem value="sha256">SHA256</MenuItem>
+                      <MenuItem value="sha512">SHA512</MenuItem>
+                    </Select>
+                  </FormControl>
+                )}
+                {/* rsa-oaep-mgf1p pins MGF1 to SHA-1 by definition. */}
+                {encOpts.keyEncryptionAlgo === 'rsa-oaep' && (
+                  <FormControl variant="standard" className={styles.select}>
+                    <InputLabel id="mgf1-digest-algo">
+                      MGF1 Digest Algorithm
+                    </InputLabel>
+                    <Select
+                      variant="standard"
+                      labelId="mgf1-digest-algo"
+                      value={encOpts.mgf1DigestAlgo}
+                      onChange={(ev) =>
+                        setEncOpts({
+                          ...encOpts,
+                          mgf1DigestAlgo: ev.target.value,
+                        })
+                      }
+                      disabled={!sendResponse || !encOpts.encryptAssertion}
+                      className={styles.select}
+                    >
+                      <MenuItem value="sha1">SHA1</MenuItem>
+                      <MenuItem value="sha256">SHA256</MenuItem>
+                      <MenuItem value="sha512">SHA512</MenuItem>
+                    </Select>
+                  </FormControl>
+                )}
+                {encOpts.keyEncryptionAlgo !== 'rsa-1_5' && (
+                  <TextField
+                    variant="standard"
+                    className={styles.select}
+                    label="OAEP Label"
+                    value={encOpts.oaepParams}
+                    onChange={(ev) =>
+                      setEncOpts({ ...encOpts, oaepParams: ev.target.value })
+                    }
+                    disabled={!sendResponse || !encOpts.encryptAssertion}
+                  />
+                )}
+              </FormGroup>
+              {encOpts.keyEncryptionAlgo === 'rsa-oaep-mgf1p' && (
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={encOpts.forceMgf1Mismatch}
+                      onChange={(ev) =>
+                        setEncOpts({
+                          ...encOpts,
+                          forceMgf1Mismatch: ev.target.checked,
+                        })
+                      }
+                      disabled={!sendResponse || !encOpts.encryptAssertion}
+                      name="forceMgf1Mismatch"
+                      color="primary"
+                    />
+                  }
+                  label="Emit non-compliant MGF1 (match MGF1 to the digest)"
+                />
+              )}
+              <TextField
+                variant="standard"
+                fullWidth
+                multiline
+                minRows={4}
+                label="Encryption Certificate (PEM)"
+                value={encOpts.encryptionCert}
+                onChange={(ev) =>
+                  setEncOpts({ ...encOpts, encryptionCert: ev.target.value })
+                }
+                disabled={!sendResponse || !encOpts.encryptAssertion}
+              />
+            </NoSsr>
+          </Paper>
+        </Grid>
+
         {/* Options */}
         <Grid item xs={4}>
           <Paper className={styles.paper}>
@@ -418,12 +602,22 @@ export async function getServerSideProps(context) {
   const q = context.query
   const b = context.req.method === 'POST' ? await parse(context.req) : {}
 
+  let encryptionCert = ''
+  if (q.encryption_cert) {
+    try {
+      encryptionCert = Buffer.from(q.encryption_cert, 'base64').toString('utf8')
+    } catch (e) {
+      encryptionCert = ''
+    }
+  }
+
   return {
     props: {
       samlreq: b.SAMLRequest || q.SAMLRequest || null,
       relayState: b.RelayState || q.RelayState || '',
       aud: q.aud || '',
       acsUrl: q.acs_url || '',
+      encryptionCert,
     },
   }
 }
